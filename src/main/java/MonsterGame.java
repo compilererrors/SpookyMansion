@@ -169,21 +169,21 @@ public class MonsterGame {
             terminal.putCharacter(player.getSymbol());
         }
 
-        for (MapLevel map : maps) {
+
             for (Monster monster: monsters) {
         if (monsterMovedIntoObstacle) {
             // Restore monster's position
-            terminal.setCursorPosition(monster.getPreviousX());
-            terminal.setCursorPosition(monster.getY());
-            //monster.getX() = monster.getPreviousX();
-            //monster.getY() = monster.getPreviousY();
+            terminal.setCursorPosition(monster.getPreviousX(), monster.getPreviousY());
+            terminal.putCharacter(monster.getSymbol());
+
         } else {
             // Move monster
-            tg.setForegroundColor(TextColor.ANSI.DEFAULT);
-            tg.putString(oldMonsterX, oldMonsterY, " ");
-            tg.setForegroundColor(TextColor.ANSI.YELLOW);
-            tg.putString(monsterX, monsterY, String.valueOf(monster));
-        }}}
+            terminal.setCursorPosition(monster.getPreviousX(), monster.getPreviousY());
+            terminal.putCharacter(' ');
+
+            terminal.setCursorPosition(monster.getX(), monster.getY());
+            terminal.putCharacter(monster.getSymbol());
+        }}
 
 
         terminal.flush();
