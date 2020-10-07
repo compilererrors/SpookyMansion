@@ -32,7 +32,7 @@ public class MonsterGame {
         List<Monster> monsters = createMonsters();
 
         List<MapLevel> maps = createObst();
-        
+
         //List<Map> maps = createMaps();
 
         drawCharacters(terminal, player, monsters, maps);
@@ -47,9 +47,7 @@ public class MonsterGame {
             drawCharacters(terminal, player, monsters, maps);
 
 
-
         } while (isPlayerAlive(player, monsters));
-
 
 
         terminal.setForegroundColor(TextColor.ANSI.RED);
@@ -120,7 +118,6 @@ public class MonsterGame {
         terminal.setCursorVisible(false);
 
 
-
         return terminal;
     }
 
@@ -149,17 +146,20 @@ public class MonsterGame {
         // Detect if monster tries to run into obstacle
         boolean monsterMovedIntoObstacle = false;
         for (MapLevel map : maps) {
-            for (Monster monster: monsters) {
-            if (map.getxObst() == monster.getX() && map.getyObst() == monster.getY()) {
-                monsterMovedIntoObstacle = true;
-            }
+            for (Monster monster : monsters) {
+                if (map.getxObst() == monster.getX() && map.getyObst() == monster.getY()) {
+                    monsterMovedIntoObstacle = true;
+                }
             }
         }
 
         if (playerMovedIntoObstacle) {
             // Restore player's position
-            terminal.setCursorPosition(player.getPreviousX(), player.getPreviousY());
-            terminal.putCharacter(player.getSymbol());
+            //terminal.setCursorPosition(player.getPreviousX(), player.getPreviousY());
+            //terminal.putCharacter(player.getSymbol());
+            player.setX(player.getPreviousX());
+            player.setY(player.getPreviousY());
+
         } else {
             // Move player
             terminal.setCursorPosition(player.getPreviousX(), player.getPreviousY());
@@ -170,20 +170,21 @@ public class MonsterGame {
         }
 
 
-            for (Monster monster: monsters) {
-        if (monsterMovedIntoObstacle) {
-            // Restore monster's position
-            terminal.setCursorPosition(monster.getPreviousX(), monster.getPreviousY());
-            terminal.putCharacter(monster.getSymbol());
+        for (Monster monster : monsters) {
+            if (monsterMovedIntoObstacle) {
+                // Restore monster's position
+                monster.setX(monster.getPreviousX());
+                monster.setY(monster.getPreviousY());
 
-        } else {
-            // Move monster
-            terminal.setCursorPosition(monster.getPreviousX(), monster.getPreviousY());
-            terminal.putCharacter(' ');
+            } else {
+                // Move monster
+                terminal.setCursorPosition(monster.getPreviousX(), monster.getPreviousY());
+                terminal.putCharacter(' ');
 
-            terminal.setCursorPosition(monster.getX(), monster.getY());
-            terminal.putCharacter(monster.getSymbol());
-        }}
+                terminal.setCursorPosition(monster.getX(), monster.getY());
+                terminal.putCharacter(monster.getSymbol());
+            }
+        }
 
 
         terminal.flush();
