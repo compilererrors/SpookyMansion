@@ -42,6 +42,10 @@
 
 
     </dependencies>
-
+    <properties>
+        <!-- necessary for intellij to function -->
+        <maven.compiler.source>14</maven.compiler.source>
+        <maven.compiler.target>14</maven.compiler.target>
+    </properties>
 
 </project>
