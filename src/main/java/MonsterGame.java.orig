@@ -1,9 +1,3 @@
-<<<<<<< HEAD
-import com.googlecode.lanterna.TerminalSize;
-import com.googlecode.lanterna.TextCharacter;
-=======
-import com.googlecode.lanterna.TerminalPosition;
->>>>>>> 3f85ed9fc5fa92c7626939c19b84c627f6a173f2
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.input.KeyStroke;
@@ -20,26 +14,16 @@ import java.util.Random;
 
 public class MonsterGame {
     private static KeyStroke latestKeyStroke = null;
+    private static Terminal terminal;
 
-        private static Terminal terminal;
+   public static void main(String[] args) throws IOException {
 
-    static {
-        try {
-            terminal = createTerminal();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+       try {
+           terminal = createTerminal();
+       } catch (IOException ioException) {
+           ioException.printStackTrace();
+       }
 
-
-    public static void main(String[] args) throws IOException {
-        Position player;
-
-<<<<<<< HEAD
-=======
-    public static void main(String[] args) {
-
->>>>>>> 3f85ed9fc5fa92c7626939c19b84c627f6a173f2
         try {
             startGame();
         } catch (IOException | InterruptedException e) {
@@ -47,10 +31,9 @@ public class MonsterGame {
             System.exit(1);
         } finally {
             gameOverScreen(terminal);
-            System.out.println("Game over!");
         }
 
-    }
+   }
 
     private static void startGame() throws IOException, InterruptedException {
 
@@ -61,30 +44,35 @@ public class MonsterGame {
 
         List<MapLevel> maps = createObst();
 
-        List<Bomb> bombs = createBombs();
+    //    List<Bomb> bombs = createBombs();
 
-        drawCharacters(terminal, player, monsters, maps);
+        //List<PwUp> pwUps = createPwUps();
+
+        drawCharacters(terminal, player, monsters, maps, bombs);
 
         int index = 0;
+        boolean monsterMove=true;
         do {
            index++;
-            if (index % 100 == 0) {
+            if (index % 50 == 0) {
 
             KeyStroke keyStroke = getUserKeyStroke(terminal,player);
 
 
             movePlayer(player, keyStroke, terminal);
 
-            moveMonsters(player, monsters);
+            if(monsterMove){
+                    moveMonsters(player, monsters);
+                    monsterMove=false;
+                }
+            else{
+                monsterMove=true;
+            }
+            }Thread.sleep(5);
 
-<<<<<<< HEAD
-            } Thread.sleep(5);
 
-            drawCharacters(terminal, player, monsters);
-=======
-            drawCharacters(terminal, player, monsters, maps);
+            drawCharacters(terminal, player, monsters, maps, bombs);
 
->>>>>>> 3f85ed9fc5fa92c7626939c19b84c627f6a173f2
 
         } while (isPlayerAlive(player, monsters));
 
@@ -96,13 +84,6 @@ public class MonsterGame {
         terminal.flush();
     }
 
-    private static List<MapLevel> createObst() {
-        List<MapLevel> obst = new ArrayList<>();
-        obst.add(new MapLevel(4, 4, '\u2588'));
-        obst.add(new MapLevel(5, 5, '\u2588'));
-
-        return obst;
-    }
 
 
     private static void moveMonsters(Player player, List<Monster> monsters) {
@@ -146,7 +127,11 @@ public class MonsterGame {
     }
 
     private static Player createPlayer() {
-        return new Player(10, 10, '\u263a');
+<<<<<<< HEAD
+        return new Player(2, 10, '\u263a');
+=======
+        return new Player(10, 10, '\u263B');
+>>>>>>> powerups
     }
 
     private static List<Monster> createMonsters() {
@@ -155,17 +140,37 @@ public class MonsterGame {
         monsters.add(new Monster(23, 23, 'X'));
         monsters.add(new Monster(23, 3, 'C'));
         monsters.add(new Monster(3, 23, 'X'));
+
         return monsters;
     }
 
     private static List<Bomb> createBombs() {
         List<Bomb> bombs = new ArrayList<>();
         Random rBomb = new Random();
+<<<<<<< HEAD
+       // Position bombPosition = new Position(rBomb.nextInt(80), rBomb.nextInt(24));
+        // bombs.add(new Bomb(bombPosition.x, bombPosition.y, 'Q'));
+=======
         Position bombPosition = new Position(rBomb.nextInt(80), rBomb.nextInt(24));
         bombs.add(new Bomb(bombPosition.x, bombPosition.y, 'Q'));
+        bombs.add(new Bomb(bombPosition.x, bombPosition.y, 'Q'));
+        bombs.add(new Bomb(bombPosition.x, bombPosition.y, '\u2665'));
+>>>>>>> powerups
 
         return bombs;
     }
+
+    /*private static List<PwUp> createPwups() {
+        List<PwUp> pwUps = new ArrayList<>();
+        Random pwUp = new Random();
+        Position pwUpPosition = new Position(rApple.nextInt(80), rApple.nextInt(24));
+        Position bombPosition = new Position(rBomb.nextInt(80), rBomb.nextInt(24));
+        pwUps.add(new PwUp(pwUp., bombPosition.y, 'Q'));
+        bombs.add(new Bomb(bombPosition.x, bombPosition.y, 'Q'));
+        bombs.add(new Bomb(bombPosition.x, bombPosition.y, '\u2665'));
+
+        return bombs;
+    }*/
 
     private static Terminal createTerminal() throws IOException {
         DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory();
@@ -177,7 +182,10 @@ public class MonsterGame {
         return terminal;
     }
 
+<<<<<<< HEAD
     private static void drawCharacters(Terminal terminal, Player player, List<Monster> monsters, List<MapLevel> maps) throws IOException {
+=======
+    private static void drawCharacters(Terminal terminal, Player player, List<Monster> monsters, List<MapLevel> maps, List<Bomb> bombs) throws IOException {
         for (Monster monster : monsters) {
             terminal.setCursorPosition(monster.getPreviousX(), monster.getPreviousY());
             terminal.putCharacter(' ');
@@ -185,10 +193,16 @@ public class MonsterGame {
             terminal.setCursorPosition(monster.getX(), monster.getY());
             terminal.putCharacter(monster.getSymbol());
         }
+>>>>>>> powerups
 
         for (MapLevel map : maps) {
             terminal.setCursorPosition(map.getxObst(), map.getyObst());
             terminal.putCharacter(map.getSymbolObst());
+        }
+
+        for (Bomb bomb : bombs) {
+            terminal.setCursorPosition(bomb.getX(), bomb.getY());
+            terminal.putCharacter(bomb.getSymbol());
         }
 
         // Detect if player tries to run into obstacle
@@ -211,8 +225,6 @@ public class MonsterGame {
 
         if (playerMovedIntoObstacle) {
             // Restore player's position
-            //terminal.setCursorPosition(player.getPreviousX(), player.getPreviousY());
-            //terminal.putCharacter(player.getSymbol());
             player.setX(player.getPreviousX());
             player.setY(player.getPreviousY());
 
@@ -226,23 +238,28 @@ public class MonsterGame {
         }
 
 
-        for (Monster monster : monsters) {
+
             if (monsterMovedIntoObstacle) {
+                for (Monster monster : monsters) {
                 // Restore monster's position
                 monster.setX(monster.getPreviousX());
                 monster.setY(monster.getPreviousY());
 
-                player.setX(player.getPreviousX());
-                player.setY(player.getPreviousY());
+<<<<<<< HEAD
+            }
+            }else {
+=======
             } /*else {
+>>>>>>> powerups
                 // Move monster
-                terminal.setCursorPosition(monster.getPreviousX(), monster.getPreviousY());
-                terminal.putCharacter(' ');
+                for (Monster monster : monsters) {
+                    terminal.setCursorPosition(monster.getPreviousX(), monster.getPreviousY());
+                    terminal.putCharacter(' ');
 
-                terminal.setCursorPosition(monster.getX(), monster.getY());
-                terminal.putCharacter(monster.getSymbol());
-            }*/
-        }
+                    terminal.setCursorPosition(monster.getX(), monster.getY());
+                    terminal.putCharacter(monster.getSymbol());
+                }
+            }
 
 
         terminal.flush();
@@ -257,18 +274,54 @@ public class MonsterGame {
         }
         return true;
     }
-<<<<<<< HEAD
+
+
+
     private static void gameOverScreen(Terminal terminal) throws IOException {
       
         String line = "YOU GOT EATEN BY THE MONSTER!!! GAMEOVER!!";
-        for (int i = 0; i < line.length(); i++) {
-            terminal.setCursorPosition(i,20);
+        for (int i = 20; i < (line.length()+20); i++) {
+            terminal.setCursorPosition(i,12);
             terminal.putCharacter(line.charAt(i));
 
     }
+}
+    private static List<MapLevel> createObst() {
+        List<MapLevel> obst = new ArrayList<>();
+        obst.add(new MapLevel(4, 0, '\u2588'));
+        obst.add(new MapLevel(4, 1, '\u2588'));
+        obst.add(new MapLevel(4, 2, '\u2588'));
+        obst.add(new MapLevel(4, 7, '\u2588'));
+        obst.add(new MapLevel(4, 8, '\u2588'));
+        obst.add(new MapLevel(4, 9, '\u2588'));
+        obst.add(new MapLevel(4, 10, '\u2588'));
+        obst.add(new MapLevel(4, 15, '\u2588'));
+        obst.add(new MapLevel(4, 16, '\u2588'));
+        obst.add(new MapLevel(4, 17, '\u2588'));
+        obst.add(new MapLevel(4, 18, '\u2588'));
+        obst.add(new MapLevel(4, 19, '\u2588'));
+        obst.add(new MapLevel(4, 22, '\u2588'));
+        obst.add(new MapLevel(4, 23, '\u2588'));
+        obst.add(new MapLevel(4, 24, '\u2588'));
+
+
+        obst.add(new MapLevel(8, 3, '\u2588'));
+        obst.add(new MapLevel(8, 4, '\u2588'));
+        obst.add(new MapLevel(8, 5, '\u2588'));
+        obst.add(new MapLevel(8, 6, '\u2588'));
+        obst.add(new MapLevel(8, 7, '\u2588'));
+        obst.add(new MapLevel(8, 10, '\u2588'));
+        obst.add(new MapLevel(8, 11, '\u2588'));
+        obst.add(new MapLevel(8, 12, '\u2588'));
+        obst.add(new MapLevel(8, 13, '\u2588'));
+        obst.add(new MapLevel(8, 14, '\u2588'));
+        obst.add(new MapLevel(8, 15, '\u2588'));
+        obst.add(new MapLevel(8, 19, '\u2588'));
+        obst.add(new MapLevel(8, 20, '\u2588'));
+        obst.add(new MapLevel(8, 21, '\u2588'));
+        obst.add(new MapLevel(8, 22, '\u2588'));
+
+        return obst;
+    }
 
 }
-}
-=======
-}
->>>>>>> 3f85ed9fc5fa92c7626939c19b84c627f6a173f2
