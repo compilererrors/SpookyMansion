@@ -68,13 +68,23 @@ public class MonsterGame {
                if (index % 100 == 0) {
                    KeyStroke keyStroke = getUserKeyStroke(terminal,player);
                    movePlayer(player, keyStroke, terminal);
+                       moveMonsters(player, monsters);
+                   }
                }
-            }
+
            else if (playerHitPwUp) {
                if (index % 30 == 0) {
                    KeyStroke keyStroke = getUserKeyStroke(terminal,player);
                    movePlayer(player, keyStroke, terminal);
+                   if(monsterMove){
+                       moveMonsters(player, monsters);
+                       monsterMove=false;
 
+                   }
+                   else{
+
+                       monsterMove=true;
+                   }
                }
             }
             else if (index % 50 == 0) {
@@ -153,7 +163,7 @@ public class MonsterGame {
 
     private static List<Monster> createMonsters() {
         List<Monster> monsters = new ArrayList<>();
-        Monster monster1 = new Monster(3,3, 'X');
+        Monster monster1 = new Monster(10,3, 'X');
         Monster monster2 = new Monster(20,3, 'X');
         Monster monster3 = new Monster(30,3, 'X');
         Monster monster4 = new Monster(40,3, 'X');
