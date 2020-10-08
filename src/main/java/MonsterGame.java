@@ -16,6 +16,9 @@ import java.util.Random;
 public class MonsterGame {
     private static KeyStroke latestKeyStroke = null;
     private static Terminal terminal;
+    private static boolean playerHitBomb = false;
+    private static boolean playerHitPwUp = false;
+    private static int score = 0;
 
    public static void main(String[] args) throws IOException {
 
@@ -39,6 +42,7 @@ public class MonsterGame {
     private static void startGame() throws IOException, InterruptedException {
 
 
+
         Player player = createPlayer();
 
         List<Monster> monsters = createMonsters();
@@ -47,18 +51,34 @@ public class MonsterGame {
 
         List<Bomb> bombs = createBombs();
 
-        //List<PwUp> pwUps = createPwUps();
+        List<PwUp> pwUps = createPwUps();
 
-        drawCharacters(terminal, player, monsters, maps, bombs);
+        drawCharacters(terminal, player, monsters, maps, bombs, pwUps);
+
+
 
         int index = 0;
         boolean monsterMove=true;
+        System.out.println(score);
+
         do {
            index++;
-            if (index % 50 == 0) {
+            scoreScreen(terminal);
+           if (playerHitBomb) {
+               if (index % 100 == 0) {
+                   KeyStroke keyStroke = getUserKeyStroke(terminal,player);
+                   movePlayer(player, keyStroke, terminal);
+               }
+            }
+           else if (playerHitPwUp) {
+               if (index % 30 == 0) {
+                   KeyStroke keyStroke = getUserKeyStroke(terminal,player);
+                   movePlayer(player, keyStroke, terminal);
 
+               }
+            }
+            else if (index % 50 == 0) {
             KeyStroke keyStroke = getUserKeyStroke(terminal,player);
-
 
             movePlayer(player, keyStroke, terminal);
 
@@ -72,7 +92,7 @@ public class MonsterGame {
             }Thread.sleep(5);
 
 
-            drawCharacters(terminal, player, monsters, maps, bombs);
+            drawCharacters(terminal, player, monsters, maps, bombs, pwUps);
 
 
         } while (isPlayerAlive(player, monsters));
@@ -133,10 +153,14 @@ public class MonsterGame {
 
     private static List<Monster> createMonsters() {
         List<Monster> monsters = new ArrayList<>();
-        monsters.add(new Monster(3, 3, 'X'));
-        monsters.add(new Monster(23, 23, 'X'));
-        monsters.add(new Monster(23, 3, 'C'));
-        monsters.add(new Monster(3, 23, 'X'));
+        Monster monster1 = new Monster(3,3, 'X');
+        Monster monster2 = new Monster(20,3, 'X');
+        Monster monster3 = new Monster(30,3, 'X');
+        Monster monster4 = new Monster(40,3, 'X');
+        monsters.add(new Monster(monster1.getX(), monster1.getY(),'X'));
+        monsters.add(new Monster(monster2.getX(), monster2.getY(),'X'));
+        monsters.add(new Monster(monster3.getX(), monster3.getY(),'X'));
+        monsters.add(new Monster(monster4.getX(), monster4.getY(),'X'));
 
         return monsters;
     }
@@ -144,24 +168,25 @@ public class MonsterGame {
     private static List<Bomb> createBombs() {
         List<Bomb> bombs = new ArrayList<>();
         Random rBomb = new Random();
-        Position bombPosition = new Position(rBomb.nextInt(80), rBomb.nextInt(24));
-        bombs.add(new Bomb(bombPosition.x, bombPosition.y, 'Q'));
-	bombs.add(new Bomb(bombPosition.x, bombPosition.y, 'Q'));
-        bombs.add(new Bomb(bombPosition.x, bombPosition.y, '\u2665'));
+        Bomb bombPosition = new Bomb(rBomb.nextInt(80), rBomb.nextInt(24), '\u256C');
+        Bomb bombPosition1 = new Bomb(rBomb.nextInt(80), rBomb.nextInt(24), '\u256C');
+        Bomb bombPosition2 = new Bomb(rBomb.nextInt(80), rBomb.nextInt(24), '\u256C');
+        bombs.add(new Bomb(bombPosition.getX(), bombPosition.getY(), '\u256C'));
+        bombs.add(new Bomb(bombPosition1.getX(), bombPosition1.getY(), '\u256C'));
+        bombs.add(new Bomb(bombPosition2.getX(), bombPosition2.getY(), '\u256C'));
         return bombs;
     }
 
-    /*private static List<PwUp> createPwups() {
+    private static List<PwUp> createPwUps() {
         List<PwUp> pwUps = new ArrayList<>();
         Random pwUp = new Random();
-        Position pwUpPosition = new Position(rApple.nextInt(80), rApple.nextInt(24));
-        Position bombPosition = new Position(rBomb.nextInt(80), rBomb.nextInt(24));
-        pwUps.add(new PwUp(pwUp., bombPosition.y, 'Q'));
-        bombs.add(new Bomb(bombPosition.x, bombPosition.y, 'Q'));
-        bombs.add(new Bomb(bombPosition.x, bombPosition.y, '\u2665'));
+        PwUp pwUp1 = new PwUp(pwUp.nextInt(80), pwUp.nextInt(24), '\u2604');
+        PwUp pwUp2 = new PwUp(pwUp.nextInt(80), pwUp.nextInt(24), '\u2604');
+        pwUps.add(new PwUp(pwUp1.getX(), pwUp1.getY(), '\u2615'));
+        pwUps.add(new PwUp(pwUp2.getX(), pwUp2.getY(), '\u2615'));
 
-        return bombs;
-    }*/
+        return pwUps;
+    }
 
     private static Terminal createTerminal() throws IOException {
         DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory();
@@ -173,7 +198,7 @@ public class MonsterGame {
         return terminal;
     }
 
-    private static void drawCharacters(Terminal terminal, Player player, List<Monster> monsters, List<MapLevel> maps, List<Bomb> bombs) throws IOException {
+    private static void drawCharacters(Terminal terminal, Player player, List<Monster> monsters, List<MapLevel> maps, List<Bomb> bombs, List<PwUp> pwUps) throws IOException {
 
         for (MapLevel map : maps) {
             terminal.setCursorPosition(map.getxObst(), map.getyObst());
@@ -183,6 +208,10 @@ public class MonsterGame {
         for (Bomb bomb : bombs) {
             terminal.setCursorPosition(bomb.getX(), bomb.getY());
             terminal.putCharacter(bomb.getSymbol());
+        }
+        for (PwUp pwUp : pwUps) {
+            terminal.setCursorPosition(pwUp.getX(), pwUp.getY());
+            terminal.putCharacter(pwUp.getSymbol());
         }
 
         // Detect if player tries to run into obstacle
@@ -202,6 +231,30 @@ public class MonsterGame {
                 }
             }
         }
+            //Detect if player walked on "bomb"
+            for (Bomb bombsOnMap: bombs) {
+                if (player.getX() == bombsOnMap.getX() && player.getY() == bombsOnMap.getY()) {
+                    playerHitPwUp = false;
+                    playerHitBomb = true;
+                }
+            }
+            for (PwUp pwUpsOnMap: pwUps) {
+                if (player.getX() == pwUpsOnMap.getX() && player.getY() == pwUpsOnMap.getY()) {
+                    if (playerHitPwUp){
+                        score += 30;
+                    }
+                    else if (playerHitBomb){
+                        score -= 2;
+                    }
+                    else if (playerHitPwUp = false) {
+                    score += 10;
+                    }
+                    playerHitBomb = false;
+                    playerHitPwUp = true;
+
+                }
+            }
+
 
         if (playerMovedIntoObstacle) {
             // Restore player's position
@@ -216,7 +269,6 @@ public class MonsterGame {
             terminal.setCursorPosition(player.getX(), player.getY());
             terminal.putCharacter(player.getSymbol());
         }
-
 
 
             if (monsterMovedIntoObstacle) {
@@ -251,9 +303,18 @@ public class MonsterGame {
         return true;
     }
 
+    private static void scoreScreen(Terminal terminal) throws IOException {
+        String stringScore= "Score: " +  Integer.toString(score);
+       for (int i = 0; i < stringScore.length(); i++) {
+            terminal.setCursorPosition(i,30);
+            terminal.putCharacter(stringScore.charAt(i));
+            terminal.flush();
+        }
+   }
 
 
-    private static void gameOverScreen(Terminal terminal) throws IOException {
+
+    private static void gameOverScreen(Terminal terminal)  throws IOException {
       
         String line = "YOU GOT EATEN BY THE MONSTER!!! GAMEOVER!!";
         for (int i = 20; i < (line.length()+20); i++) {
