@@ -45,7 +45,7 @@ public class MonsterGame {
 
         List<MapLevel> maps = createObst();
 
-    //    List<Bomb> bombs = createBombs();
+        List<Bomb> bombs = createBombs();
 
         //List<PwUp> pwUps = createPwUps();
 
@@ -173,7 +173,7 @@ public class MonsterGame {
         return terminal;
     }
 
-    private static void drawCharacters(Terminal terminal, Player player, List<Monster> monsters, List<MapLevel> maps) throws IOException {
+    private static void drawCharacters(Terminal terminal, Player player, List<Monster> monsters, List<MapLevel> maps, List<Bomb> bombs) throws IOException {
 
         for (MapLevel map : maps) {
             terminal.setCursorPosition(map.getxObst(), map.getyObst());
