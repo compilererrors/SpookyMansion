@@ -1,5 +1,10 @@
+import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.TextCharacter;
 import com.googlecode.lanterna.TextColor;
+import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.input.KeyStroke;
+import com.googlecode.lanterna.screen.Screen;
+import com.googlecode.lanterna.screen.TerminalScreen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
 
@@ -7,10 +12,23 @@ import javax.swing.text.Position;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class MonsterGame {
     private static KeyStroke latestKeyStroke = null;
-    public static void main(String[] args) {
+
+        private static Terminal terminal;
+
+    static {
+        try {
+            terminal = createTerminal();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public static void main(String[] args) throws IOException {
         Position player;
 
         try {
@@ -19,13 +37,14 @@ public class MonsterGame {
             e.printStackTrace();
             System.exit(1);
         } finally {
+            gameOverScreen(terminal);
             System.out.println("Game over!");
         }
 
     }
 
     private static void startGame() throws IOException, InterruptedException {
-        Terminal terminal = createTerminal();
+
 
         Player player = createPlayer();
 
@@ -37,7 +56,7 @@ public class MonsterGame {
         do {
            index++;
             if (index % 100 == 0) {
-              
+
             KeyStroke keyStroke = getUserKeyStroke(terminal,player);
 
 
@@ -97,14 +116,7 @@ public class MonsterGame {
         return latestKeyStroke;
 
     }
-/*
-       do {
-            Thread.sleep(5);
-            keyStroke = terminal.pollInput();
-        } while (keyStroke == null);
-        return keyStroke;
-    }
-*/
+
     private static Player createPlayer() {
         return new Player(10, 10, '\u263a');
     }
@@ -152,4 +164,14 @@ public class MonsterGame {
         }
         return true;
     }
+    private static void gameOverScreen(Terminal terminal) throws IOException {
+      
+        String line = "YOU GOT EATEN BY THE MONSTER!!! GAMEOVER!!";
+        for (int i = 0; i < line.length(); i++) {
+            terminal.setCursorPosition(i,20);
+            terminal.putCharacter(line.charAt(i));
+
+    }
+
+}
 }
