@@ -1,3 +1,4 @@
+import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.input.KeyStroke;
@@ -46,7 +47,9 @@ public class MonsterGame {
 
     //    List<Bomb> bombs = createBombs();
 
-        drawCharacters(terminal, player, monsters, maps);
+        //List<PwUp> pwUps = createPwUps();
+
+        drawCharacters(terminal, player, monsters, maps, bombs);
 
         int index = 0;
         boolean monsterMove=true;
@@ -69,7 +72,7 @@ public class MonsterGame {
             }Thread.sleep(5);
 
 
-            drawCharacters(terminal, player, monsters, maps);
+            drawCharacters(terminal, player, monsters, maps, bombs);
 
 
         } while (isPlayerAlive(player, monsters));
@@ -125,7 +128,7 @@ public class MonsterGame {
     }
 
     private static Player createPlayer() {
-        return new Player(2, 10, '\u263a');
+        return new Player(2, 10, '\u263B');
     }
 
     private static List<Monster> createMonsters() {
@@ -141,11 +144,24 @@ public class MonsterGame {
     private static List<Bomb> createBombs() {
         List<Bomb> bombs = new ArrayList<>();
         Random rBomb = new Random();
-       // Position bombPosition = new Position(rBomb.nextInt(80), rBomb.nextInt(24));
-        // bombs.add(new Bomb(bombPosition.x, bombPosition.y, 'Q'));
-
+        Position bombPosition = new Position(rBomb.nextInt(80), rBomb.nextInt(24));
+        bombs.add(new Bomb(bombPosition.x, bombPosition.y, 'Q'));
+	bombs.add(new Bomb(bombPosition.x, bombPosition.y, 'Q'));
+        bombs.add(new Bomb(bombPosition.x, bombPosition.y, '\u2665'));
         return bombs;
     }
+
+    /*private static List<PwUp> createPwups() {
+        List<PwUp> pwUps = new ArrayList<>();
+        Random pwUp = new Random();
+        Position pwUpPosition = new Position(rApple.nextInt(80), rApple.nextInt(24));
+        Position bombPosition = new Position(rBomb.nextInt(80), rBomb.nextInt(24));
+        pwUps.add(new PwUp(pwUp., bombPosition.y, 'Q'));
+        bombs.add(new Bomb(bombPosition.x, bombPosition.y, 'Q'));
+        bombs.add(new Bomb(bombPosition.x, bombPosition.y, '\u2665'));
+
+        return bombs;
+    }*/
 
     private static Terminal createTerminal() throws IOException {
         DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory();
@@ -162,6 +178,11 @@ public class MonsterGame {
         for (MapLevel map : maps) {
             terminal.setCursorPosition(map.getxObst(), map.getyObst());
             terminal.putCharacter(map.getSymbolObst());
+        }
+
+        for (Bomb bomb : bombs) {
+            terminal.setCursorPosition(bomb.getX(), bomb.getY());
+            terminal.putCharacter(bomb.getSymbol());
         }
 
         // Detect if player tries to run into obstacle

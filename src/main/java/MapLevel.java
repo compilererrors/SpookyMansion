@@ -27,7 +27,7 @@ public class MapLevel {
 
     @Override
     public String toString() {
-        return "Monster{" +
+        return "MapObstacle{" +
                 "x=" + xObst +
                 ", y=" + yObst +
                 ", symbol=" + symbolObst +

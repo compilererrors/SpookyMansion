@@ -1,9 +1,9 @@
-public class Bomb {
+public class PwUp {
     private int x;
     private int y;
     private char symbol;
 
-    public Bomb(int x, int y, char symbol) {
+    public PwUp(int x, int y, char symbol) {
         this.x = x;
         this.y = y;
         this.symbol = symbol;
@@ -31,7 +31,7 @@ public class Bomb {
 
     @Override
     public String toString() {
-        return "Bomb{" +
+        return "PwUp{" +
                 "x=" + x +
                 ", y=" + y +
                 ", symbol=" + symbol +
