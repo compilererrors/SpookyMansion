@@ -113,10 +113,10 @@ public class MonsterGame {
     }
 
     private static List<Bomb> createBombs() {
-        List<Position> bombs = new ArrayList<>();
+        List<Bomb> bombs = new ArrayList<>();
         Random rBomb = new Random();
         Position bombPosition = new Position(rBomb.nextInt(80), rBomb.nextInt(24));
-        bombs.add(new Position(bombPosition.x, bombPosition.y));
+        bombs.add(new Bomb(bombPosition.x, bombPosition.y, 'Q'));
 
         return bombs;
     }
