@@ -8,6 +8,7 @@ import com.googlecode.lanterna.terminal.Terminal;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class MonsterGame {
 
@@ -33,7 +34,7 @@ public class MonsterGame {
 
         List<MapLevel> maps = createObst();
 
-        //List<Map> maps = createMaps();
+        List<Bomb> bombs = createBombs();
 
         drawCharacters(terminal, player, monsters, maps);
 
@@ -111,6 +112,15 @@ public class MonsterGame {
         return monsters;
     }
 
+    private static List<Bomb> createBombs() {
+        List<Position> bombs = new ArrayList<>();
+        Random rBomb = new Random();
+        Position bombPosition = new Position(rBomb.nextInt(80), rBomb.nextInt(24));
+        bombs.add(new Position(bombPosition.x, bombPosition.y));
+
+        return bombs;
+    }
+
     private static Terminal createTerminal() throws IOException {
         DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory();
         Terminal terminal = terminalFactory.createTerminal();
@@ -176,14 +186,16 @@ public class MonsterGame {
                 monster.setX(monster.getPreviousX());
                 monster.setY(monster.getPreviousY());
 
-            } else {
+                player.setX(player.getPreviousX());
+                player.setY(player.getPreviousY());
+            } /*else {
                 // Move monster
                 terminal.setCursorPosition(monster.getPreviousX(), monster.getPreviousY());
                 terminal.putCharacter(' ');
 
                 terminal.setCursorPosition(monster.getX(), monster.getY());
                 terminal.putCharacter(monster.getSymbol());
-            }
+            }*/
         }
 
 
