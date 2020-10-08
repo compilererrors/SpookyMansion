@@ -3,13 +3,16 @@ import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
 
+import javax.swing.text.Position;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MonsterGame {
-
+    private static KeyStroke latestKeyStroke = null;
     public static void main(String[] args) {
+        Position player;
+
         try {
             startGame();
         } catch (IOException | InterruptedException e) {
@@ -30,12 +33,19 @@ public class MonsterGame {
 
         drawCharacters(terminal, player, monsters);
 
+        int index = 0;
         do {
-            KeyStroke keyStroke = getUserKeyStroke(terminal);
+           index++;
+            if (index % 100 == 0) {
+              
+            KeyStroke keyStroke = getUserKeyStroke(terminal,player);
 
-            movePlayer(player, keyStroke);
+
+            movePlayer(player, keyStroke, terminal);
 
             moveMonsters(player, monsters);
+
+            } Thread.sleep(5);
 
             drawCharacters(terminal, player, monsters);
 
@@ -54,7 +64,8 @@ public class MonsterGame {
         }
     }
 
-    private static void movePlayer(Player player, KeyStroke keyStroke) {
+    private static void movePlayer(Player player, KeyStroke keyStroke, Terminal terminal) {
+
         switch (keyStroke.getKeyType()) {
             case ArrowUp:
                 player.moveUp();
@@ -69,17 +80,31 @@ public class MonsterGame {
                 player.moveRight();
                 break;
         }
+
     }
 
-    private static KeyStroke getUserKeyStroke(Terminal terminal) throws InterruptedException, IOException {
-        KeyStroke keyStroke;
+    private static KeyStroke getUserKeyStroke(Terminal terminal, Player player) throws InterruptedException, IOException {
+        KeyStroke keyStroke=null;
+
         do {
+            keyStroke = terminal.pollInput();
+            if(keyStroke != null) {
+                latestKeyStroke = keyStroke;
+            }
+        } while (latestKeyStroke == null);
+
+
+        return latestKeyStroke;
+
+    }
+/*
+       do {
             Thread.sleep(5);
             keyStroke = terminal.pollInput();
         } while (keyStroke == null);
         return keyStroke;
     }
-
+*/
     private static Player createPlayer() {
         return new Player(10, 10, '\u263a');
     }
