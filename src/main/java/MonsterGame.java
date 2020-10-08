@@ -1,5 +1,3 @@
-import com.googlecode.lanterna.TerminalSize;
-import com.googlecode.lanterna.TextCharacter;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.input.KeyStroke;
@@ -17,6 +15,7 @@ import java.util.Random;
 public class MonsterGame {
     private static KeyStroke latestKeyStroke = null;
 
+    public static void main(String[] args) {
         private static Terminal terminal;
 
     static {
@@ -50,7 +49,11 @@ public class MonsterGame {
 
         List<Monster> monsters = createMonsters();
 
-        drawCharacters(terminal, player, monsters);
+        List<MapLevel> maps = createObst();
+
+        List<Bomb> bombs = createBombs();
+
+        drawCharacters(terminal, player, monsters, maps);
 
         int index = 0;
         do {
@@ -63,12 +66,13 @@ public class MonsterGame {
             movePlayer(player, keyStroke, terminal);
 
             moveMonsters(player, monsters);
+ 		 } Thread.sleep(5);
 
-            } Thread.sleep(5);
+            drawCharacters(terminal, player, monsters, maps);
 
-            drawCharacters(terminal, player, monsters);
 
         } while (isPlayerAlive(player, monsters));
+
 
         terminal.setForegroundColor(TextColor.ANSI.RED);
         terminal.setCursorPosition(player.getX(), player.getY());
@@ -76,6 +80,15 @@ public class MonsterGame {
         terminal.bell();
         terminal.flush();
     }
+
+    private static List<MapLevel> createObst() {
+        List<MapLevel> obst = new ArrayList<>();
+        obst.add(new MapLevel(4, 4, '\u2588'));
+        obst.add(new MapLevel(5, 5, '\u2588'));
+
+        return obst;
+    }
+
 
     private static void moveMonsters(Player player, List<Monster> monsters) {
         for (Monster monster : monsters) {
@@ -130,14 +143,26 @@ public class MonsterGame {
         return monsters;
     }
 
+    private static List<Bomb> createBombs() {
+        List<Bomb> bombs = new ArrayList<>();
+        Random rBomb = new Random();
+        Position bombPosition = new Position(rBomb.nextInt(80), rBomb.nextInt(24));
+        bombs.add(new Bomb(bombPosition.x, bombPosition.y, 'Q'));
+
+        return bombs;
+    }
+
     private static Terminal createTerminal() throws IOException {
         DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory();
         Terminal terminal = terminalFactory.createTerminal();
+        TextGraphics tg = terminal.newTextGraphics();
         terminal.setCursorVisible(false);
+
+
         return terminal;
     }
 
-    private static void drawCharacters(Terminal terminal, Player player, List<Monster> monsters) throws IOException {
+    private static void drawCharacters(Terminal terminal, Player player, List<Monster> monsters, List<MapLevel> maps) throws IOException {
         for (Monster monster : monsters) {
             terminal.setCursorPosition(monster.getPreviousX(), monster.getPreviousY());
             terminal.putCharacter(' ');
@@ -146,11 +171,64 @@ public class MonsterGame {
             terminal.putCharacter(monster.getSymbol());
         }
 
-        terminal.setCursorPosition(player.getPreviousX(), player.getPreviousY());
-        terminal.putCharacter(' ');
+        for (MapLevel map : maps) {
+            terminal.setCursorPosition(map.getxObst(), map.getyObst());
+            terminal.putCharacter(map.getSymbolObst());
+        }
 
-        terminal.setCursorPosition(player.getX(), player.getY());
-        terminal.putCharacter(player.getSymbol());
+        // Detect if player tries to run into obstacle
+        boolean playerMovedIntoObstacle = false;
+        for (MapLevel map : maps) {
+            if (map.getxObst() == player.getX() && map.getyObst() == player.getY()) {
+                playerMovedIntoObstacle = true;
+            }
+        }
+
+        // Detect if monster tries to run into obstacle
+        boolean monsterMovedIntoObstacle = false;
+        for (MapLevel map : maps) {
+            for (Monster monster : monsters) {
+                if (map.getxObst() == monster.getX() && map.getyObst() == monster.getY()) {
+                    monsterMovedIntoObstacle = true;
+                }
+            }
+        }
+
+        if (playerMovedIntoObstacle) {
+            // Restore player's position
+            //terminal.setCursorPosition(player.getPreviousX(), player.getPreviousY());
+            //terminal.putCharacter(player.getSymbol());
+            player.setX(player.getPreviousX());
+            player.setY(player.getPreviousY());
+
+        } else {
+            // Move player
+            terminal.setCursorPosition(player.getPreviousX(), player.getPreviousY());
+            terminal.putCharacter(' ');
+
+            terminal.setCursorPosition(player.getX(), player.getY());
+            terminal.putCharacter(player.getSymbol());
+        }
+
+
+        for (Monster monster : monsters) {
+            if (monsterMovedIntoObstacle) {
+                // Restore monster's position
+                monster.setX(monster.getPreviousX());
+                monster.setY(monster.getPreviousY());
+
+                player.setX(player.getPreviousX());
+                player.setY(player.getPreviousY());
+            } /*else {
+                // Move monster
+                terminal.setCursorPosition(monster.getPreviousX(), monster.getPreviousY());
+                terminal.putCharacter(' ');
+
+                terminal.setCursorPosition(monster.getX(), monster.getY());
+                terminal.putCharacter(monster.getSymbol());
+            }*/
+        }
+
 
         terminal.flush();
 
