@@ -44,25 +44,25 @@ public class Player {
     public void moveUp(){
         previousX = x;
         previousY = y;
-        y -= 2;
+        y -= 1;
     }
 
     public void moveDown(){
         previousX = x;
         previousY = y;
-        y += 2;
+        y += 1;
     }
 
     public void moveLeft(){
         previousX = x;
         previousY = y;
-        x -= 2;
+        x -= 1;
     }
 
     public void moveRight(){
         previousX = x;
         previousY = y;
-        x += 2;
+        x += 1;
     }
 
     @Override
