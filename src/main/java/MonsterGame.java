@@ -158,18 +158,18 @@ public class MonsterGame {
     }
 
     private static Player createPlayer() {
-        return new Player(28, 10, '\u263B');
+        return new Player(20, 10, '\u263B');
     }
 
     private static List<Monster> createMonsters() {
         List<Monster> monsters = new ArrayList<>();
-        Monster monster1 = new Monster(40,3, '\u26F9');
-        Monster monster2 = new Monster(38,3, '\u26F7');
-        Monster monster3 = new Monster(44,4, '\u26C4');
-        Monster monster4 = new Monster(30,3, '\u2603');
-        Monster monster5 = new Monster(35,3, '\u2622');
-        Monster monster6 = new Monster(50,4, '\u2623');
-        Monster monster7 = new Monster(52,3, '\u26F9');
+        Monster monster1 = new Monster(5,3, '\u26F9');
+        Monster monster2 = new Monster(10,3, '\u26F7');
+        Monster monster3 = new Monster(2,4, '\u26C4');
+        Monster monster4 = new Monster(7,4, '\u2603');
+        Monster monster5 = new Monster(6,10, '\u2622');
+        Monster monster6 = new Monster(8,15, '\u2623');
+        Monster monster7 = new Monster(4,20, '\u26F9');
         monsters.add(new Monster(monster1.getX(), monster1.getY(),monster1.getSymbol()));
         monsters.add(new Monster(monster2.getX(), monster2.getY(),monster2.getSymbol()));
         monsters.add(new Monster(monster3.getX(), monster3.getY(),monster3.getSymbol()));
@@ -184,7 +184,7 @@ public class MonsterGame {
     private static List<Bomb> createBombs() {
         List<Bomb> bombs = new ArrayList<>();
         for(int i=10; i<100; i+=5){
-            int randomNum = ThreadLocalRandom.current().nextInt(5, 26);
+            int randomNum = ThreadLocalRandom.current().nextInt(15, 35);
             Random rBomb = new Random();
             Bomb bombPosition = new Bomb(rBomb.nextInt(i), rBomb.nextInt(randomNum), '\u26B0');
             bombs.add(new Bomb(bombPosition.getX(), bombPosition.getY(), bombPosition.getSymbol()));
@@ -195,7 +195,7 @@ public class MonsterGame {
     private static List<PwUp> createPwUps() {
         List<PwUp> pwUps = new ArrayList<>();
         for(int i=10; i<200; i+=5){
-            int randomNum = ThreadLocalRandom.current().nextInt(5, 26);
+            int randomNum = ThreadLocalRandom.current().nextInt(15, 35);
             Random randompwUp = new Random();
             PwUp pwUp1 = new PwUp(randompwUp.nextInt(i), randompwUp.nextInt(randomNum), '\u2604');
             pwUps.add(new PwUp(pwUp1.getX(), pwUp1.getY(), pwUp1.getSymbol()));
