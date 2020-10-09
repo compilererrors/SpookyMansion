@@ -57,7 +57,7 @@ public class MonsterGame {
 
         drawCharacters(terminal, player, monsters, maps, bombs, pwUps);
 
-
+        tg.setForegroundColor(TextColor.ANSI.RED).putCSIStyledString(15,15, "hello");
 
         int index = 0;
         boolean monsterMove=true;
@@ -171,7 +171,7 @@ public class MonsterGame {
         Monster monster4 = new Monster(46,3, '\u2603');
         Monster monster5 = new Monster(48,3, '\u2622');
         Monster monster6 = new Monster(50,3, '\u2623');
-        Monster monster7 = new Monster(52,3, '\u26B0');
+        Monster monster7 = new Monster(52,3, '\u26F9');
         monsters.add(new Monster(monster1.getX(), monster1.getY(),monster1.getSymbol()));
         monsters.add(new Monster(monster2.getX(), monster2.getY(),monster2.getSymbol()));
         monsters.add(new Monster(monster3.getX(), monster3.getY(),monster3.getSymbol()));
@@ -188,7 +188,7 @@ public class MonsterGame {
         Random rBomb = new Random();
         Bomb bombPosition = new Bomb(rBomb.nextInt(80), rBomb.nextInt(24), '\u256C');
         Bomb bombPosition1 = new Bomb(rBomb.nextInt(80), rBomb.nextInt(24), '\u256C');
-        Bomb bombPosition2 = new Bomb(rBomb.nextInt(80), rBomb.nextInt(24), '\u256C');
+        Bomb bombPosition2 = new Bomb(rBomb.nextInt(80), rBomb.nextInt(24), '\u26B0');
         bombs.add(new Bomb(bombPosition.getX(), bombPosition.getY(), bombPosition.getSymbol()));
         bombs.add(new Bomb(bombPosition1.getX(), bombPosition1.getY(), bombPosition1.getSymbol()));
         bombs.add(new Bomb(bombPosition2.getX(), bombPosition2.getY(), bombPosition2.getSymbol()));
@@ -199,9 +199,13 @@ public class MonsterGame {
         List<PwUp> pwUps = new ArrayList<>();
         Random pwUp = new Random();
         PwUp pwUp1 = new PwUp(pwUp.nextInt(80), pwUp.nextInt(24), '\u2604');
-        PwUp pwUp2 = new PwUp(pwUp.nextInt(80), pwUp.nextInt(24), '\u2604');
-        pwUps.add(new PwUp(pwUp1.getX(), pwUp1.getY(), '\u2615'));
-        pwUps.add(new PwUp(pwUp2.getX(), pwUp2.getY(), '\u2615'));
+        PwUp pwUp2 = new PwUp(pwUp.nextInt(80), pwUp.nextInt(24), '\u26A1');
+        PwUp pwUp3 = new PwUp(pwUp.nextInt(80), pwUp.nextInt(24), '\u2B50');
+        PwUp pwUp4 = new PwUp(pwUp.nextInt(80), pwUp.nextInt(24), '\u2604');
+        pwUps.add(new PwUp(pwUp1.getX(), pwUp1.getY(), pwUp1.getSymbol()));
+        pwUps.add(new PwUp(pwUp2.getX(), pwUp2.getY(), pwUp2.getSymbol()));
+        pwUps.add(new PwUp(pwUp3.getX(), pwUp3.getY(), pwUp3.getSymbol()));
+        pwUps.add(new PwUp(pwUp4.getX(), pwUp4.getY(), pwUp4.getSymbol()));
 
         return pwUps;
     }
