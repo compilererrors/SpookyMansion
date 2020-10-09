@@ -44,7 +44,7 @@ public class MonsterGame {
     private static void startGame() throws IOException, InterruptedException {
 
 
-       startMusic();
+       //startMusic();
 
         Player player = createPlayer();
 
@@ -169,11 +169,11 @@ public class MonsterGame {
     private static List<Monster> createMonsters() {
         List<Monster> monsters = new ArrayList<>();
         Monster monster1 = new Monster(40,3, '\u26F9');
-        Monster monster2 = new Monster(42,3, '\u26F7');
-        Monster monster3 = new Monster(44,3, '\u26C4');
-        Monster monster4 = new Monster(46,3, '\u2603');
-        Monster monster5 = new Monster(48,3, '\u2622');
-        Monster monster6 = new Monster(50,3, '\u2623');
+        Monster monster2 = new Monster(38,3, '\u26F7');
+        Monster monster3 = new Monster(44,4, '\u26C4');
+        Monster monster4 = new Monster(30,3, '\u2603');
+        Monster monster5 = new Monster(35,3, '\u2622');
+        Monster monster6 = new Monster(50,4, '\u2623');
         Monster monster7 = new Monster(52,3, '\u26F9');
         monsters.add(new Monster(monster1.getX(), monster1.getY(),monster1.getSymbol()));
         monsters.add(new Monster(monster2.getX(), monster2.getY(),monster2.getSymbol()));
@@ -255,15 +255,26 @@ public class MonsterGame {
         for (MapLevel map : maps) {
             for (Monster monster : monsters) {
                 if (map.getxObst() == monster.getX() && map.getyObst() == monster.getY()) {
-                 monsterMovedIntoObstacle = true;
-
-
-                         
-
+                    monster.setX(monster.getPreviousX());
+                    monster.setY(monster.getPreviousY());
 
                 }
             }
         }
+
+        //Detect if Monster moved in to monster
+        for (Monster monster : monsters) {
+            for (Monster monster2 : monsters) {
+                if (monster.getX() == monster2.getX() && monster.getY() == monster2.getY()) {
+                    if(monster2.getSymbol()!=monster.getSymbol()) {
+                        monster2.setX(monster2.getPreviousX());
+                        monster2.setY(monster2.getPreviousY());
+                    }
+                }
+            }
+        }
+
+
             //Detect if player walked on "bomb"
             for (Bomb bombsOnMap: bombs) {
                 if (player.getX() == bombsOnMap.getX() && player.getY() == bombsOnMap.getY()) {
@@ -304,33 +315,13 @@ public class MonsterGame {
             terminal.putCharacter(player.getSymbol());
         }
 
-
-                           // Move monster
-
-        boolean monsterMovedIntoObstacle = false;
-        for (MapLevel map : maps) {
-            for (Monster monster : monsters) {
-                if (map.getxObst() == monster.getX() && map.getyObst() == monster.getY()) {
-                    monsterMovedIntoObstacle = true;
-                    // Restore monster's position
-                    monster.setX(monster.getPreviousX());
-                    monster.setY(monster.getPreviousY());
-                }
-
-            }
-        }
-
-            //Move monster or not depending on boolean
-
-
-                // Move monster
+                // set out monster and Move monster
                 for (Monster monster : monsters) {
                     terminal.setCursorPosition(monster.getPreviousX(), monster.getPreviousY());
                     terminal.putCharacter(' ');
                     terminal.setCursorPosition(monster.getX(), monster.getY());
                     terminal.putCharacter(monster.getSymbol());
                 }
-
 
        terminal.flush();
 
@@ -374,38 +365,237 @@ public class MonsterGame {
 
     private static List<MapLevel> createObst() {
         List<MapLevel> obst = new ArrayList<>();
-        obst.add(new MapLevel(4, 0, '\u2588'));
-        obst.add(new MapLevel(4, 1, '\u2588'));
-        obst.add(new MapLevel(4, 2, '\u2588'));
-        obst.add(new MapLevel(4, 7, '\u2588'));
-        obst.add(new MapLevel(4, 8, '\u2588'));
-        obst.add(new MapLevel(4, 9, '\u2588'));
-        obst.add(new MapLevel(4, 10, '\u2588'));
-        obst.add(new MapLevel(4, 15, '\u2588'));
-        obst.add(new MapLevel(4, 16, '\u2588'));
-        obst.add(new MapLevel(4, 17, '\u2588'));
-        obst.add(new MapLevel(4, 18, '\u2588'));
-        obst.add(new MapLevel(4, 19, '\u2588'));
-        obst.add(new MapLevel(4, 22, '\u2588'));
-        obst.add(new MapLevel(4, 23, '\u2588'));
-        obst.add(new MapLevel(4, 24, '\u2588'));
+        //högersida
+        //rad1
+        obst.add(new MapLevel(5, 0, '\u2588'));
+        obst.add(new MapLevel(5, 1, '\u2588'));
+        obst.add(new MapLevel(5, 2, '\u2588'));
+        obst.add(new MapLevel(5, 3, '\u2588'));
+        obst.add(new MapLevel(5, 4, '\u2588'));
 
 
-        obst.add(new MapLevel(8, 3, '\u2588'));
-        obst.add(new MapLevel(8, 4, '\u2588'));
-        obst.add(new MapLevel(8, 5, '\u2588'));
-        obst.add(new MapLevel(8, 6, '\u2588'));
-        obst.add(new MapLevel(8, 7, '\u2588'));
-        obst.add(new MapLevel(8, 10, '\u2588'));
-        obst.add(new MapLevel(8, 11, '\u2588'));
-        obst.add(new MapLevel(8, 12, '\u2588'));
-        obst.add(new MapLevel(8, 13, '\u2588'));
-        obst.add(new MapLevel(8, 14, '\u2588'));
-        obst.add(new MapLevel(8, 15, '\u2588'));
-        obst.add(new MapLevel(8, 19, '\u2588'));
-        obst.add(new MapLevel(8, 20, '\u2588'));
-        obst.add(new MapLevel(8, 21, '\u2588'));
-        obst.add(new MapLevel(8, 22, '\u2588'));
+        obst.add(new MapLevel(5, 10, '\u2588'));
+        obst.add(new MapLevel(5, 11, '\u2588'));
+        obst.add(new MapLevel(5, 12, '\u2588'));
+        obst.add(new MapLevel(5, 13, '\u2588'));
+        obst.add(new MapLevel(5, 14, '\u2588'));
+        obst.add(new MapLevel(5, 15, '\u2588'));
+
+        obst.add(new MapLevel(5, 20, '\u2588'));
+        obst.add(new MapLevel(5, 21, '\u2588'));
+        obst.add(new MapLevel(5, 22, '\u2588'));
+        obst.add(new MapLevel(5, 23, '\u2588'));
+        obst.add(new MapLevel(5, 24, '\u2588'));
+        obst.add(new MapLevel(5, 25, '\u2588'));
+//rad 2
+        obst.add(new MapLevel(10, 4, '\u2588'));
+        obst.add(new MapLevel(10, 5, '\u2588'));
+        obst.add(new MapLevel(10, 6, '\u2588'));
+        obst.add(new MapLevel(10, 7, '\u2588'));
+        obst.add(new MapLevel(10, 8, '\u2588'));
+        obst.add(new MapLevel(10, 9, '\u2588'));
+        obst.add(new MapLevel(10, 10, '\u2588'));
+
+        obst.add(new MapLevel(10, 13, '\u2588'));
+        obst.add(new MapLevel(10, 14, '\u2588'));
+        obst.add(new MapLevel(10, 15, '\u2588'));
+        obst.add(new MapLevel(10, 16, '\u2588'));
+        obst.add(new MapLevel(10, 17, '\u2588'));
+        obst.add(new MapLevel(10, 18, '\u2588'));
+        obst.add(new MapLevel(10, 19, '\u2588'));
+        obst.add(new MapLevel(10, 20, '\u2588'));
+        //rad 3
+
+        obst.add(new MapLevel(15, 0, '\u2588'));
+        obst.add(new MapLevel(15, 1, '\u2588'));
+        obst.add(new MapLevel(15, 2, '\u2588'));
+        obst.add(new MapLevel(15, 3, '\u2588'));
+        obst.add(new MapLevel(15, 4, '\u2588'));
+
+        obst.add(new MapLevel(15, 10, '\u2588'));
+        obst.add(new MapLevel(15, 11, '\u2588'));
+        obst.add(new MapLevel(15, 12, '\u2588'));
+        obst.add(new MapLevel(15, 13, '\u2588'));
+        obst.add(new MapLevel(15, 14, '\u2588'));
+        obst.add(new MapLevel(15, 15, '\u2588'));
+
+        obst.add(new MapLevel(15, 20, '\u2588'));
+        obst.add(new MapLevel(15, 21, '\u2588'));
+        obst.add(new MapLevel(15, 22, '\u2588'));
+        obst.add(new MapLevel(15, 23, '\u2588'));
+        obst.add(new MapLevel(15, 24, '\u2588'));
+        obst.add(new MapLevel(15, 25, '\u2588'));
+        //rad4
+        obst.add(new MapLevel(20, 4, '\u2588'));
+        obst.add(new MapLevel(20, 5, '\u2588'));
+        obst.add(new MapLevel(20, 6, '\u2588'));
+        obst.add(new MapLevel(20, 7, '\u2588'));
+        obst.add(new MapLevel(20, 8, '\u2588'));
+        obst.add(new MapLevel(20, 9, '\u2588'));
+        obst.add(new MapLevel(20, 10, '\u2588'));
+
+        obst.add(new MapLevel(20, 13, '\u2588'));
+        obst.add(new MapLevel(20, 14, '\u2588'));
+        obst.add(new MapLevel(20, 15, '\u2588'));
+        obst.add(new MapLevel(20, 16, '\u2588'));
+        obst.add(new MapLevel(20, 17, '\u2588'));
+        obst.add(new MapLevel(20, 18, '\u2588'));
+        obst.add(new MapLevel(20, 19, '\u2588'));
+        obst.add(new MapLevel(20, 20, '\u2588'));
+//rad5
+        obst.add(new MapLevel(25, 0, '\u2588'));
+        obst.add(new MapLevel(25, 1, '\u2588'));
+        obst.add(new MapLevel(25, 2, '\u2588'));
+        obst.add(new MapLevel(25, 3, '\u2588'));
+        obst.add(new MapLevel(25, 4, '\u2588'));
+
+
+        obst.add(new MapLevel(25, 10, '\u2588'));
+        obst.add(new MapLevel(25, 11, '\u2588'));
+        obst.add(new MapLevel(25, 12, '\u2588'));
+        obst.add(new MapLevel(25, 13, '\u2588'));
+        obst.add(new MapLevel(25, 14, '\u2588'));
+        obst.add(new MapLevel(25, 15, '\u2588'));
+
+        obst.add(new MapLevel(25, 20, '\u2588'));
+        obst.add(new MapLevel(25, 21, '\u2588'));
+        obst.add(new MapLevel(25, 22, '\u2588'));
+        obst.add(new MapLevel(25, 23, '\u2588'));
+        obst.add(new MapLevel(25, 24, '\u2588'));
+        obst.add(new MapLevel(25, 25, '\u2588'));
+//rad 6
+        obst.add(new MapLevel(30, 4, '\u2588'));
+        obst.add(new MapLevel(30, 5, '\u2588'));
+        obst.add(new MapLevel(30, 6, '\u2588'));
+        obst.add(new MapLevel(30, 7, '\u2588'));
+        obst.add(new MapLevel(30, 8, '\u2588'));
+        obst.add(new MapLevel(30, 9, '\u2588'));
+        obst.add(new MapLevel(30, 10, '\u2588'));
+
+        obst.add(new MapLevel(30, 13, '\u2588'));
+        obst.add(new MapLevel(30, 14, '\u2588'));
+        obst.add(new MapLevel(30, 15, '\u2588'));
+        obst.add(new MapLevel(30, 16, '\u2588'));
+        obst.add(new MapLevel(30, 17, '\u2588'));
+        obst.add(new MapLevel(30, 18, '\u2588'));
+        obst.add(new MapLevel(30, 19, '\u2588'));
+        obst.add(new MapLevel(30, 20, '\u2588'));
+
+        //vänstersida
+
+        //rad7
+        obst.add(new MapLevel(35, 0, '\u2588'));
+        obst.add(new MapLevel(35, 1, '\u2588'));
+        obst.add(new MapLevel(35, 2, '\u2588'));
+        obst.add(new MapLevel(35, 3, '\u2588'));
+        obst.add(new MapLevel(35, 4, '\u2588'));
+
+
+        obst.add(new MapLevel(35, 10, '\u2588'));
+        obst.add(new MapLevel(35, 11, '\u2588'));
+        obst.add(new MapLevel(35, 12, '\u2588'));
+        obst.add(new MapLevel(35, 13, '\u2588'));
+        obst.add(new MapLevel(35, 14, '\u2588'));
+        obst.add(new MapLevel(35, 15, '\u2588'));
+
+        obst.add(new MapLevel(35, 20, '\u2588'));
+        obst.add(new MapLevel(35, 21, '\u2588'));
+        obst.add(new MapLevel(35, 22, '\u2588'));
+        obst.add(new MapLevel(35, 23, '\u2588'));
+        obst.add(new MapLevel(35, 24, '\u2588'));
+        obst.add(new MapLevel(35, 25, '\u2588'));
+//rad 8
+        obst.add(new MapLevel(40, 4, '\u2588'));
+        obst.add(new MapLevel(40, 5, '\u2588'));
+        obst.add(new MapLevel(40, 6, '\u2588'));
+        obst.add(new MapLevel(40, 7, '\u2588'));
+        obst.add(new MapLevel(40, 8, '\u2588'));
+        obst.add(new MapLevel(40, 9, '\u2588'));
+        obst.add(new MapLevel(40, 10, '\u2588'));
+
+        obst.add(new MapLevel(40, 13, '\u2588'));
+        obst.add(new MapLevel(40, 14, '\u2588'));
+        obst.add(new MapLevel(40, 15, '\u2588'));
+        obst.add(new MapLevel(40, 16, '\u2588'));
+        obst.add(new MapLevel(40, 17, '\u2588'));
+        obst.add(new MapLevel(40, 18, '\u2588'));
+        obst.add(new MapLevel(40, 19, '\u2588'));
+        obst.add(new MapLevel(40, 20, '\u2588'));
+        //rad 9
+
+        obst.add(new MapLevel(45, 0, '\u2588'));
+        obst.add(new MapLevel(45, 1, '\u2588'));
+        obst.add(new MapLevel(45, 2, '\u2588'));
+        obst.add(new MapLevel(45, 3, '\u2588'));
+        obst.add(new MapLevel(45, 4, '\u2588'));
+
+        obst.add(new MapLevel(45, 10, '\u2588'));
+        obst.add(new MapLevel(45, 11, '\u2588'));
+        obst.add(new MapLevel(45, 12, '\u2588'));
+        obst.add(new MapLevel(45, 13, '\u2588'));
+        obst.add(new MapLevel(45, 14, '\u2588'));
+        obst.add(new MapLevel(45, 15, '\u2588'));
+
+        obst.add(new MapLevel(45, 20, '\u2588'));
+        obst.add(new MapLevel(45, 21, '\u2588'));
+        obst.add(new MapLevel(45, 22, '\u2588'));
+        obst.add(new MapLevel(45, 23, '\u2588'));
+        obst.add(new MapLevel(45, 24, '\u2588'));
+        obst.add(new MapLevel(45, 25, '\u2588'));
+        //rad4
+        obst.add(new MapLevel(50, 4, '\u2588'));
+        obst.add(new MapLevel(50, 5, '\u2588'));
+        obst.add(new MapLevel(50, 6, '\u2588'));
+        obst.add(new MapLevel(50, 7, '\u2588'));
+        obst.add(new MapLevel(50, 8, '\u2588'));
+        obst.add(new MapLevel(50, 9, '\u2588'));
+        obst.add(new MapLevel(50, 10, '\u2588'));
+
+        obst.add(new MapLevel(50, 13, '\u2588'));
+        obst.add(new MapLevel(50, 14, '\u2588'));
+        obst.add(new MapLevel(50, 15, '\u2588'));
+        obst.add(new MapLevel(50, 16, '\u2588'));
+        obst.add(new MapLevel(50, 17, '\u2588'));
+        obst.add(new MapLevel(50, 18, '\u2588'));
+        obst.add(new MapLevel(50, 19, '\u2588'));
+        obst.add(new MapLevel(50, 20, '\u2588'));
+//rad10
+        obst.add(new MapLevel(55, 0, '\u2588'));
+        obst.add(new MapLevel(55, 1, '\u2588'));
+        obst.add(new MapLevel(55, 2, '\u2588'));
+        obst.add(new MapLevel(55, 3, '\u2588'));
+        obst.add(new MapLevel(55, 4, '\u2588'));
+
+        obst.add(new MapLevel(55, 10, '\u2588'));
+        obst.add(new MapLevel(55, 11, '\u2588'));
+        obst.add(new MapLevel(55, 12, '\u2588'));
+        obst.add(new MapLevel(55, 13, '\u2588'));
+        obst.add(new MapLevel(55, 14, '\u2588'));
+        obst.add(new MapLevel(55, 15, '\u2588'));
+
+        obst.add(new MapLevel(55, 20, '\u2588'));
+        obst.add(new MapLevel(55, 21, '\u2588'));
+        obst.add(new MapLevel(55, 22, '\u2588'));
+        obst.add(new MapLevel(55, 23, '\u2588'));
+        obst.add(new MapLevel(55, 24, '\u2588'));
+        obst.add(new MapLevel(55, 25, '\u2588'));
+//rad 11
+        obst.add(new MapLevel(60, 4, '\u2588'));
+        obst.add(new MapLevel(60, 5, '\u2588'));
+        obst.add(new MapLevel(60, 6, '\u2588'));
+        obst.add(new MapLevel(60, 7, '\u2588'));
+        obst.add(new MapLevel(60, 8, '\u2588'));
+        obst.add(new MapLevel(60, 9, '\u2588'));
+        obst.add(new MapLevel(60, 10, '\u2588'));
+
+        obst.add(new MapLevel(60, 13, '\u2588'));
+        obst.add(new MapLevel(60, 14, '\u2588'));
+        obst.add(new MapLevel(60, 15, '\u2588'));
+        obst.add(new MapLevel(60, 16, '\u2588'));
+        obst.add(new MapLevel(60, 17, '\u2588'));
+        obst.add(new MapLevel(60, 18, '\u2588'));
+        obst.add(new MapLevel(60, 19, '\u2588'));
+        obst.add(new MapLevel(60, 20, '\u2588'));
 
         return obst;
     }
