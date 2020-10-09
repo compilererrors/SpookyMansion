@@ -59,7 +59,7 @@ public class MonsterGame {
         drawCharacters(terminal, player, monsters, maps, bombs, pwUps);
 
         //Test strings
-        //tg.setForegroundColor(TextColor.ANSI.RED).putCSIStyledString(1,1, "hello");
+
         System.out.println(score);
 
         int index = 0;
@@ -217,7 +217,6 @@ public class MonsterGame {
         DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory();
         Terminal terminal = terminalFactory.createTerminal();
         TextGraphics tg = terminal.newTextGraphics();
-        TerminalSize ts = terminal.getTerminalSize();
         terminal.setCursorVisible(false);
 
 
