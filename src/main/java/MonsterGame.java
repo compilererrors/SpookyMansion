@@ -229,6 +229,7 @@ public class MonsterGame {
         for (MapLevel map : maps) {
             if (map.getxObst() == player.getX() && map.getyObst() == player.getY()) {
                 playerMovedIntoObstacle = true;
+
             }
         }
 
@@ -238,6 +239,13 @@ public class MonsterGame {
             for (Monster monster : monsters) {
                 if (map.getxObst() == monster.getX() && map.getyObst() == monster.getY()) {
                     monsterMovedIntoObstacle = true;
+
+
+                            // Restore monster's position
+                            monster.setX(monster.getPreviousX());
+                            monster.setY(monster.getPreviousY());
+
+
                 }
             }
         }
@@ -281,14 +289,14 @@ public class MonsterGame {
         }
 
 
-            if (monsterMovedIntoObstacle) {
+           /* if (monsterMovedIntoObstacle) {
                 for (Monster monster : monsters) {
                 // Restore monster's position
                 monster.setX(monster.getPreviousX());
                 monster.setY(monster.getPreviousY());
 
             }
-            }else {
+            }else {*/
                 // Move monster
                 for (Monster monster : monsters) {
                     terminal.setCursorPosition(monster.getPreviousX(), monster.getPreviousY());
@@ -300,9 +308,9 @@ public class MonsterGame {
             }
 
 
-        terminal.flush();
+   //     terminal.flush();
 
-    }
+  //  }
 
     private static boolean isPlayerAlive(Player player, List<Monster> monsters) {
         for (Monster monster : monsters) {
