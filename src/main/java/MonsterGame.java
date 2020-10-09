@@ -158,7 +158,7 @@ public class MonsterGame {
     }
 
     private static Player createPlayer() {
-        return new Player(20, 10, '\u263B');
+        return new Player(21, 10, '\u263B');
     }
 
     private static List<Monster> createMonsters() {
@@ -238,9 +238,10 @@ public class MonsterGame {
 
         }
         for (PwUp pwUp : pwUps) {
-            terminal.setCursorPosition(pwUp.getX()+offsetX, pwUp.getY());
-            terminal.putCharacter(pwUp.getSymbol());
-        }
+                terminal.setCursorPosition(pwUp.getX() + offsetX, pwUp.getY());
+                terminal.putCharacter(pwUp.getSymbol());
+            }
+
 
         // Detect if player tries to run into obstacle
         boolean playerMovedIntoObstacle = false;
@@ -293,6 +294,7 @@ public class MonsterGame {
                     }
                     else if (playerHitPwUp = false) {
                     score += 10;
+
                 }
                 //This will be triggered after if's are done
                 playerHitBomb = false;
