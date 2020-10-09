@@ -184,7 +184,7 @@ public class MonsterGame {
     private static List<Bomb> createBombs() {
         List<Bomb> bombs = new ArrayList<>();
         for(int i=10; i<100; i+=5){
-            int randomNum = ThreadLocalRandom.current().nextInt(15, 35);
+            int randomNum = ThreadLocalRandom.current().nextInt(15, 30);
             Random rBomb = new Random();
             Bomb bombPosition = new Bomb(rBomb.nextInt(i), rBomb.nextInt(randomNum), '\u26B0');
             bombs.add(new Bomb(bombPosition.getX(), bombPosition.getY(), bombPosition.getSymbol()));
@@ -195,7 +195,7 @@ public class MonsterGame {
     private static List<PwUp> createPwUps() {
         List<PwUp> pwUps = new ArrayList<>();
         for(int i=10; i<200; i+=5){
-            int randomNum = ThreadLocalRandom.current().nextInt(15, 35);
+            int randomNum = ThreadLocalRandom.current().nextInt(15, 30);
             Random randompwUp = new Random();
             PwUp pwUp1 = new PwUp(randompwUp.nextInt(i), randompwUp.nextInt(randomNum), '\u2604');
             pwUps.add(new PwUp(pwUp1.getX(), pwUp1.getY(), pwUp1.getSymbol()));
@@ -236,13 +236,15 @@ public class MonsterGame {
         }
 
         for (Bomb bomb : bombs) {
+            if(bomb.getX()+offsetX >= 0 && bomb.getX()+offsetX < 80){
             terminal.setCursorPosition(bomb.getX()+offsetX, bomb.getY());
-            terminal.putCharacter(bomb.getSymbol());
+            terminal.putCharacter(bomb.getSymbol());}
 
         }
         for (PwUp pwUp : pwUps) {
+            if(pwUp.getX()+offsetX >= 0 && pwUp.getX()+offsetX < 80){
                 terminal.setCursorPosition(pwUp.getX() + offsetX, pwUp.getY());
-                terminal.putCharacter(pwUp.getSymbol());
+                terminal.putCharacter(pwUp.getSymbol());}
             }
 
 
