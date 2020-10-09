@@ -1,14 +1,10 @@
-import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.input.KeyStroke;
-import com.googlecode.lanterna.screen.Screen;
-import com.googlecode.lanterna.screen.TerminalScreen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
 
-import javax.swing.text.Position;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,14 +17,16 @@ public class MonsterGame {
     private static boolean playerHitPwUp = false;
     private static int score = 0;
     private static TextGraphics tg;
+    private static int offsetX = 0;
 
-   public static void main(String[] args) throws IOException {
 
-       try {
-           terminal = createTerminal();
-       } catch (IOException ioException) {
-           ioException.printStackTrace();
-       }
+    public static void main(String[] args) throws IOException {
+
+        try {
+            terminal = createTerminal();
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
 
         try {
             startGame();
@@ -39,18 +37,18 @@ public class MonsterGame {
             gameOverScreen(terminal);
         }
 
-   }
+    }
 
     private static void startGame() throws IOException, InterruptedException {
 
 
-       //startMusic();
+       startMusic();
 
         Player player = createPlayer();
 
         List<Monster> monsters = createMonsters();
 
-        List<MapLevel> maps = createObst();
+        List<Obstacle> maps = createObst();
 
         List<Bomb> bombs = createBombs();
 
@@ -60,51 +58,48 @@ public class MonsterGame {
 
         //Test strings
 
-        System.out.println(score);
+        //tg.putString(2, 2, "JHELLO");
+
 
         int index = 0;
-        boolean monsterMove=true;
+        boolean monsterMove = true;
 
 
         do {
-           index++;
+            index++;
             scoreScreen(terminal);
-           if (playerHitBomb) {
-               if (index % 100 == 0) {
-                   KeyStroke keyStroke = getUserKeyStroke(terminal,player);
-                   movePlayer(player, keyStroke, terminal);
-                       moveMonsters(player, monsters);
-                   }
-               }
-
-           else if (playerHitPwUp) {
-               if (index % 30 == 0) {
-                   KeyStroke keyStroke = getUserKeyStroke(terminal,player);
-                   movePlayer(player, keyStroke, terminal);
-                   if(monsterMove){
-                       moveMonsters(player, monsters);
-                       monsterMove=false;
-
-                   }
-                   else{
-
-                       monsterMove=true;
-                   }
-               }
-            }
-            else if (index % 50 == 0) {
-            KeyStroke keyStroke = getUserKeyStroke(terminal,player);
-
-            movePlayer(player, keyStroke, terminal);
-
-            if(monsterMove){
+            if (playerHitBomb) {
+                if (index % 100 == 0) {
+                    KeyStroke keyStroke = getUserKeyStroke(terminal, player);
+                    movePlayer(player, keyStroke, terminal);
                     moveMonsters(player, monsters);
-                    monsterMove=false;
                 }
-            else{
-                monsterMove=true;
+            } else if (playerHitPwUp) {
+                if (index % 30 == 0) {
+                    KeyStroke keyStroke = getUserKeyStroke(terminal, player);
+                    movePlayer(player, keyStroke, terminal);
+                    if (monsterMove) {
+                        moveMonsters(player, monsters);
+                        monsterMove = false;
+
+                    } else {
+
+                        monsterMove = true;
+                    }
+                }
+            } else if (index % 50 == 0) {
+                KeyStroke keyStroke = getUserKeyStroke(terminal, player);
+
+                movePlayer(player, keyStroke, terminal);
+
+                if (monsterMove) {
+                    moveMonsters(player, monsters);
+                    monsterMove = false;
+                } else {
+                    monsterMove = true;
+                }
             }
-            }Thread.sleep(5);
+            Thread.sleep(5);
 
 
             drawCharacters(terminal, player, monsters, maps, bombs, pwUps);
@@ -119,7 +114,6 @@ public class MonsterGame {
         terminal.bell();
         terminal.flush();
     }
-
 
 
     private static void moveMonsters(Player player, List<Monster> monsters) {
@@ -148,11 +142,11 @@ public class MonsterGame {
     }
 
     private static KeyStroke getUserKeyStroke(Terminal terminal, Player player) throws InterruptedException, IOException {
-        KeyStroke keyStroke=null;
+        KeyStroke keyStroke = null;
 
         do {
             keyStroke = terminal.pollInput();
-            if(keyStroke != null) {
+            if (keyStroke != null) {
                 latestKeyStroke = keyStroke;
             }
         } while (latestKeyStroke == null);
@@ -163,7 +157,7 @@ public class MonsterGame {
     }
 
     private static Player createPlayer() {
-        return new Player(2, 10, '\u263B');
+        return new Player(28, 10, '\u263B');
     }
 
     private static List<Monster> createMonsters() {
@@ -216,34 +210,45 @@ public class MonsterGame {
     private static Terminal createTerminal() throws IOException {
         DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory();
         Terminal terminal = terminalFactory.createTerminal();
-        TextGraphics tg = terminal.newTextGraphics();
+        terminal.getTerminalSize();
+        TerminalSize.ONE.withColumns(1);
+        tg = terminal.newTextGraphics();
         terminal.setCursorVisible(false);
 
 
         return terminal;
     }
 
-    private static void drawCharacters(Terminal terminal, Player player, List<Monster> monsters, List<MapLevel> maps, List<Bomb> bombs, List<PwUp> pwUps) throws IOException {
+    private static void drawCharacters(Terminal terminal, Player player, List<Monster> monsters, List<Obstacle> maps, List<Bomb> bombs, List<PwUp> pwUps) throws IOException {
 
-        for (MapLevel map : maps) {
-            terminal.setCursorPosition(map.getxObst(), map.getyObst());
-            terminal.putCharacter(map.getSymbolObst());
-            //tg.setForegroundColor(TextColor.ANSI.RED).putCSIStyledString(map.getxObst(), map.getyObst(), String.valueOf(map.getSymbolObst()));
+        terminal.clearScreen();
+
+        if (player.getX()+offsetX > 30) {
+            offsetX -= 1;
+        }
+
+        for (Obstacle obstacle : maps) {
+            if(obstacle.getxObst()+offsetX >= 0 && obstacle.getxObst()+offsetX < 80){
+                terminal.setCursorPosition(obstacle.getxObst()+offsetX, obstacle.getyObst());
+                terminal.putCharacter(obstacle.getSymbolObst());
+            }
+
+
         }
 
         for (Bomb bomb : bombs) {
-            terminal.setCursorPosition(bomb.getX(), bomb.getY());
+            terminal.setCursorPosition(bomb.getX()+offsetX, bomb.getY());
             terminal.putCharacter(bomb.getSymbol());
 
         }
         for (PwUp pwUp : pwUps) {
-            terminal.setCursorPosition(pwUp.getX(), pwUp.getY());
+            terminal.setCursorPosition(pwUp.getX()+offsetX, pwUp.getY());
             terminal.putCharacter(pwUp.getSymbol());
         }
 
         // Detect if player tries to run into obstacle
         boolean playerMovedIntoObstacle = false;
-        for (MapLevel map : maps) {
+        for (Obstacle map : maps) {
             if (map.getxObst() == player.getX() && map.getyObst() == player.getY()) {
                 playerMovedIntoObstacle = true;
 
@@ -252,7 +257,7 @@ public class MonsterGame {
 
         // Detect if monster tries to run into obstacle
         //boolean monsterMovedIntoObstacle = false;
-        for (MapLevel map : maps) {
+        for (Obstacle map : maps) {
             for (Monster monster : monsters) {
                 if (map.getxObst() == monster.getX() && map.getyObst() == monster.getY()) {
                     monster.setX(monster.getPreviousX());
@@ -292,13 +297,13 @@ public class MonsterGame {
                     }
                     else if (playerHitPwUp = false) {
                     score += 10;
-                    }
-                    //This will be triggered after if's are done
-                    playerHitBomb = false;
-                    playerHitPwUp = true;
-
                 }
+                //This will be triggered after if's are done
+                playerHitBomb = false;
+                playerHitPwUp = true;
+
             }
+        }
 
 
         if (playerMovedIntoObstacle) {
@@ -308,20 +313,20 @@ public class MonsterGame {
 
         } else {
             // Move player
-            terminal.setCursorPosition(player.getPreviousX(), player.getPreviousY());
-            terminal.putCharacter(' ');
 
-            terminal.setCursorPosition(player.getX(), player.getY());
+
+            terminal.setCursorPosition(player.getX()+offsetX, player.getY());
             terminal.putCharacter(player.getSymbol());
         }
 
-                // set out monster and Move monster
-                for (Monster monster : monsters) {
-                    terminal.setCursorPosition(monster.getPreviousX(), monster.getPreviousY());
-                    terminal.putCharacter(' ');
-                    terminal.setCursorPosition(monster.getX(), monster.getY());
-                    terminal.putCharacter(monster.getSymbol());
-                }
+
+
+
+                // Move monster
+              for (Monster monster : monsters) {
+            terminal.setCursorPosition(monster.getX()+offsetX, monster.getY());
+            terminal.putCharacter(monster.getSymbol());
+        }
 
        terminal.flush();
 
@@ -337,25 +342,27 @@ public class MonsterGame {
     }
 
     private static void scoreScreen(Terminal terminal) throws IOException {
-        String stringScore= "Score: " +  Integer.toString(score);
-       for (int i = 0; i < stringScore.length(); i++) {
-            terminal.setCursorPosition(i,30);
+        String stringScore = "Score: " + Integer.toString(score);
+        for (int i = 0; i < stringScore.length(); i++) {
+            terminal.setCursorPosition(i, 30);
             terminal.putCharacter(stringScore.charAt(i));
             terminal.flush();
         }
-   }
-
-
-
-    private static void gameOverScreen(Terminal terminal)  throws IOException {
-      
-        String line = "YOU GOT EATEN BY THE MONSTER!!! GAMEOVER!!";
-        for (int i = 20; i < (line.length()+20); i++) {
-            terminal.setCursorPosition(i,12);
-            terminal.putCharacter(line.charAt(i));
-
     }
-}
+
+
+    private static void gameOverScreen(Terminal terminal) throws IOException {
+
+        String line = "YOU GOT EATEN BY THE MONSTER! GAMEOVER!";
+        for (int i = 0; i < (line.length()); i++) {
+            if (i == 0) {
+                terminal.setCursorPosition(i, 11);
+                terminal.putCharacter(line.charAt(i));
+            }
+            terminal.setCursorPosition(i, 11);
+            terminal.putCharacter(line.charAt(i));
+        }
+    }
 
     private static void startMusic() {
         // Exemple of playing background music in new thread, just use Music class and these 2 lines:
@@ -363,240 +370,196 @@ public class MonsterGame {
         thread.start();
     }
 
-    private static List<MapLevel> createObst() {
-        List<MapLevel> obst = new ArrayList<>();
+    private static List<Obstacle> createObst() {
+         List<Obstacle> obst = new ArrayList<>();
         //högersida
         //rad1
-        obst.add(new MapLevel(5, 0, '\u2588'));
-        obst.add(new MapLevel(5, 1, '\u2588'));
-        obst.add(new MapLevel(5, 2, '\u2588'));
-        obst.add(new MapLevel(5, 3, '\u2588'));
-        obst.add(new MapLevel(5, 4, '\u2588'));
+        obst.add(new Obstacle(5, 0, '\u2588'));
+        obst.add(new Obstacle(5, 1, '\u2588'));
+        obst.add(new Obstacle(5, 2, '\u2588'));
+        obst.add(new Obstacle(5, 3, '\u2588'));
+        obst.add(new Obstacle(5, 4, '\u2588'));
 
 
-        obst.add(new MapLevel(5, 10, '\u2588'));
-        obst.add(new MapLevel(5, 11, '\u2588'));
-        obst.add(new MapLevel(5, 12, '\u2588'));
-        obst.add(new MapLevel(5, 13, '\u2588'));
-        obst.add(new MapLevel(5, 14, '\u2588'));
-        obst.add(new MapLevel(5, 15, '\u2588'));
+        obst.add(new Obstacle(5, 10, '\u2588'));
+        obst.add(new Obstacle(5, 11, '\u2588'));
+        obst.add(new Obstacle(5, 12, '\u2588'));
+        obst.add(new Obstacle(5, 13, '\u2588'));
+        obst.add(new Obstacle(5, 14, '\u2588'));
+        obst.add(new Obstacle(5, 15, '\u2588'));
 
-        obst.add(new MapLevel(5, 20, '\u2588'));
-        obst.add(new MapLevel(5, 21, '\u2588'));
-        obst.add(new MapLevel(5, 22, '\u2588'));
-        obst.add(new MapLevel(5, 23, '\u2588'));
-        obst.add(new MapLevel(5, 24, '\u2588'));
-        obst.add(new MapLevel(5, 25, '\u2588'));
+        obst.add(new Obstacle(5, 20, '\u2588'));
+        obst.add(new Obstacle(5, 21, '\u2588'));
+        obst.add(new Obstacle(5, 22, '\u2588'));
+        obst.add(new Obstacle(5, 23, '\u2588'));
+        obst.add(new Obstacle(5, 24, '\u2588'));
+        obst.add(new Obstacle(5, 25, '\u2588'));
 //rad 2
-        obst.add(new MapLevel(10, 4, '\u2588'));
-        obst.add(new MapLevel(10, 5, '\u2588'));
-        obst.add(new MapLevel(10, 6, '\u2588'));
-        obst.add(new MapLevel(10, 7, '\u2588'));
-        obst.add(new MapLevel(10, 8, '\u2588'));
-        obst.add(new MapLevel(10, 9, '\u2588'));
-        obst.add(new MapLevel(10, 10, '\u2588'));
+        obst.add(new Obstacle(10, 4, '\u2588'));
+        obst.add(new Obstacle(10, 5, '\u2588'));
+        obst.add(new Obstacle(10, 6, '\u2588'));
+        obst.add(new Obstacle(10, 7, '\u2588'));
+        obst.add(new Obstacle(10, 8, '\u2588'));
+        obst.add(new Obstacle(10, 9, '\u2588'));
+        obst.add(new Obstacle(10, 10, '\u2588'));
 
-        obst.add(new MapLevel(10, 13, '\u2588'));
-        obst.add(new MapLevel(10, 14, '\u2588'));
-        obst.add(new MapLevel(10, 15, '\u2588'));
-        obst.add(new MapLevel(10, 16, '\u2588'));
-        obst.add(new MapLevel(10, 17, '\u2588'));
-        obst.add(new MapLevel(10, 18, '\u2588'));
-        obst.add(new MapLevel(10, 19, '\u2588'));
-        obst.add(new MapLevel(10, 20, '\u2588'));
+        obst.add(new Obstacle(10, 13, '\u2588'));
+        obst.add(new Obstacle(10, 14, '\u2588'));
+        obst.add(new Obstacle(10, 15, '\u2588'));
+        obst.add(new Obstacle(10, 16, '\u2588'));
+        obst.add(new Obstacle(10, 17, '\u2588'));
+        obst.add(new Obstacle(10, 18, '\u2588'));
+        obst.add(new Obstacle(10, 19, '\u2588'));
+        obst.add(new Obstacle(10, 20, '\u2588'));
         //rad 3
 
-        obst.add(new MapLevel(15, 0, '\u2588'));
-        obst.add(new MapLevel(15, 1, '\u2588'));
-        obst.add(new MapLevel(15, 2, '\u2588'));
-        obst.add(new MapLevel(15, 3, '\u2588'));
-        obst.add(new MapLevel(15, 4, '\u2588'));
+        obst.add(new Obstacle(15, 0, '\u2588'));
+        obst.add(new Obstacle(15, 1, '\u2588'));
+        obst.add(new Obstacle(15, 2, '\u2588'));
+        obst.add(new Obstacle(15, 3, '\u2588'));
+        obst.add(new Obstacle(15, 4, '\u2588'));
 
-        obst.add(new MapLevel(15, 10, '\u2588'));
-        obst.add(new MapLevel(15, 11, '\u2588'));
-        obst.add(new MapLevel(15, 12, '\u2588'));
-        obst.add(new MapLevel(15, 13, '\u2588'));
-        obst.add(new MapLevel(15, 14, '\u2588'));
-        obst.add(new MapLevel(15, 15, '\u2588'));
+        obst.add(new Obstacle(15, 10, '\u2588'));
+        obst.add(new Obstacle(15, 11, '\u2588'));
+        obst.add(new Obstacle(15, 12, '\u2588'));
+        obst.add(new Obstacle(15, 13, '\u2588'));
+        obst.add(new Obstacle(15, 14, '\u2588'));
+        obst.add(new Obstacle(15, 15, '\u2588'));
 
-        obst.add(new MapLevel(15, 20, '\u2588'));
-        obst.add(new MapLevel(15, 21, '\u2588'));
-        obst.add(new MapLevel(15, 22, '\u2588'));
-        obst.add(new MapLevel(15, 23, '\u2588'));
-        obst.add(new MapLevel(15, 24, '\u2588'));
-        obst.add(new MapLevel(15, 25, '\u2588'));
+        obst.add(new Obstacle(15, 20, '\u2588'));
+        obst.add(new Obstacle(15, 21, '\u2588'));
+        obst.add(new Obstacle(15, 22, '\u2588'));
+        obst.add(new Obstacle(15, 23, '\u2588'));
+        obst.add(new Obstacle(15, 24, '\u2588'));
+        obst.add(new Obstacle(15, 25, '\u2588'));
         //rad4
-        obst.add(new MapLevel(20, 4, '\u2588'));
-        obst.add(new MapLevel(20, 5, '\u2588'));
-        obst.add(new MapLevel(20, 6, '\u2588'));
-        obst.add(new MapLevel(20, 7, '\u2588'));
-        obst.add(new MapLevel(20, 8, '\u2588'));
-        obst.add(new MapLevel(20, 9, '\u2588'));
-        obst.add(new MapLevel(20, 10, '\u2588'));
+        obst.add(new Obstacle(20, 4, '\u2588'));
+        obst.add(new Obstacle(20, 5, '\u2588'));
+        obst.add(new Obstacle(20, 6, '\u2588'));
+        obst.add(new Obstacle(20, 7, '\u2588'));
+        obst.add(new Obstacle(20, 8, '\u2588'));
+        obst.add(new Obstacle(20, 9, '\u2588'));
+        obst.add(new Obstacle(20, 10, '\u2588'));
 
-        obst.add(new MapLevel(20, 13, '\u2588'));
-        obst.add(new MapLevel(20, 14, '\u2588'));
-        obst.add(new MapLevel(20, 15, '\u2588'));
-        obst.add(new MapLevel(20, 16, '\u2588'));
-        obst.add(new MapLevel(20, 17, '\u2588'));
-        obst.add(new MapLevel(20, 18, '\u2588'));
-        obst.add(new MapLevel(20, 19, '\u2588'));
-        obst.add(new MapLevel(20, 20, '\u2588'));
+        obst.add(new Obstacle(20, 13, '\u2588'));
+        obst.add(new Obstacle(20, 14, '\u2588'));
+        obst.add(new Obstacle(20, 15, '\u2588'));
+        obst.add(new Obstacle(20, 16, '\u2588'));
+        obst.add(new Obstacle(20, 17, '\u2588'));
+        obst.add(new Obstacle(20, 18, '\u2588'));
+        obst.add(new Obstacle(20, 19, '\u2588'));
+        obst.add(new Obstacle(20, 20, '\u2588'));
 //rad5
-        obst.add(new MapLevel(25, 0, '\u2588'));
-        obst.add(new MapLevel(25, 1, '\u2588'));
-        obst.add(new MapLevel(25, 2, '\u2588'));
-        obst.add(new MapLevel(25, 3, '\u2588'));
-        obst.add(new MapLevel(25, 4, '\u2588'));
+        obst.add(new Obstacle(25, 0, '\u2588'));
+        obst.add(new Obstacle(25, 1, '\u2588'));
+        obst.add(new Obstacle(25, 2, '\u2588'));
+        obst.add(new Obstacle(25, 3, '\u2588'));
+        obst.add(new Obstacle(25, 4, '\u2588'));
 
 
-        obst.add(new MapLevel(25, 10, '\u2588'));
-        obst.add(new MapLevel(25, 11, '\u2588'));
-        obst.add(new MapLevel(25, 12, '\u2588'));
-        obst.add(new MapLevel(25, 13, '\u2588'));
-        obst.add(new MapLevel(25, 14, '\u2588'));
-        obst.add(new MapLevel(25, 15, '\u2588'));
+        obst.add(new Obstacle(25, 10, '\u2588'));
+        obst.add(new Obstacle(25, 11, '\u2588'));
+        obst.add(new Obstacle(25, 12, '\u2588'));
+        obst.add(new Obstacle(25, 13, '\u2588'));
+        obst.add(new Obstacle(25, 14, '\u2588'));
+        obst.add(new Obstacle(25, 15, '\u2588'));
 
-        obst.add(new MapLevel(25, 20, '\u2588'));
-        obst.add(new MapLevel(25, 21, '\u2588'));
-        obst.add(new MapLevel(25, 22, '\u2588'));
-        obst.add(new MapLevel(25, 23, '\u2588'));
-        obst.add(new MapLevel(25, 24, '\u2588'));
-        obst.add(new MapLevel(25, 25, '\u2588'));
+        obst.add(new Obstacle(25, 20, '\u2588'));
+        obst.add(new Obstacle(25, 21, '\u2588'));
+        obst.add(new Obstacle(25, 22, '\u2588'));
+        obst.add(new Obstacle(25, 23, '\u2588'));
+        obst.add(new Obstacle(25, 24, '\u2588'));
+        obst.add(new Obstacle(25, 25, '\u2588'));
 //rad 6
-        obst.add(new MapLevel(30, 4, '\u2588'));
-        obst.add(new MapLevel(30, 5, '\u2588'));
-        obst.add(new MapLevel(30, 6, '\u2588'));
-        obst.add(new MapLevel(30, 7, '\u2588'));
-        obst.add(new MapLevel(30, 8, '\u2588'));
-        obst.add(new MapLevel(30, 9, '\u2588'));
-        obst.add(new MapLevel(30, 10, '\u2588'));
+        obst.add(new Obstacle(30, 4, '\u2588'));
+        obst.add(new Obstacle(30, 5, '\u2588'));
+        obst.add(new Obstacle(30, 6, '\u2588'));
+        obst.add(new Obstacle(30, 7, '\u2588'));
+        obst.add(new Obstacle(30, 8, '\u2588'));
+        obst.add(new Obstacle(30, 9, '\u2588'));
+        obst.add(new Obstacle(30, 10, '\u2588'));
 
-        obst.add(new MapLevel(30, 13, '\u2588'));
-        obst.add(new MapLevel(30, 14, '\u2588'));
-        obst.add(new MapLevel(30, 15, '\u2588'));
-        obst.add(new MapLevel(30, 16, '\u2588'));
-        obst.add(new MapLevel(30, 17, '\u2588'));
-        obst.add(new MapLevel(30, 18, '\u2588'));
-        obst.add(new MapLevel(30, 19, '\u2588'));
-        obst.add(new MapLevel(30, 20, '\u2588'));
+        obst.add(new Obstacle(30, 13, '\u2588'));
+        obst.add(new Obstacle(30, 14, '\u2588'));
+        obst.add(new Obstacle(30, 15, '\u2588'));
+        obst.add(new Obstacle(30, 16, '\u2588'));
+        obst.add(new Obstacle(30, 17, '\u2588'));
+        obst.add(new Obstacle(30, 18, '\u2588'));
+        obst.add(new Obstacle(30, 19, '\u2588'));
+        obst.add(new Obstacle(30, 20, '\u2588'));
 
         //vänstersida
 
         //rad7
-        obst.add(new MapLevel(35, 0, '\u2588'));
-        obst.add(new MapLevel(35, 1, '\u2588'));
-        obst.add(new MapLevel(35, 2, '\u2588'));
-        obst.add(new MapLevel(35, 3, '\u2588'));
-        obst.add(new MapLevel(35, 4, '\u2588'));
+        obst.add(new Obstacle(35, 0, '\u2588'));
+        obst.add(new Obstacle(35, 1, '\u2588'));
+        obst.add(new Obstacle(35, 2, '\u2588'));
+        obst.add(new Obstacle(35, 3, '\u2588'));
+        obst.add(new Obstacle(35, 4, '\u2588'));
 
 
-        obst.add(new MapLevel(35, 10, '\u2588'));
-        obst.add(new MapLevel(35, 11, '\u2588'));
-        obst.add(new MapLevel(35, 12, '\u2588'));
-        obst.add(new MapLevel(35, 13, '\u2588'));
-        obst.add(new MapLevel(35, 14, '\u2588'));
-        obst.add(new MapLevel(35, 15, '\u2588'));
+        obst.add(new Obstacle(35, 10, '\u2588'));
+        obst.add(new Obstacle(35, 11, '\u2588'));
+        obst.add(new Obstacle(35, 12, '\u2588'));
+        obst.add(new Obstacle(35, 13, '\u2588'));
+        obst.add(new Obstacle(35, 14, '\u2588'));
+        obst.add(new Obstacle(35, 15, '\u2588'));
 
-        obst.add(new MapLevel(35, 20, '\u2588'));
-        obst.add(new MapLevel(35, 21, '\u2588'));
-        obst.add(new MapLevel(35, 22, '\u2588'));
-        obst.add(new MapLevel(35, 23, '\u2588'));
-        obst.add(new MapLevel(35, 24, '\u2588'));
-        obst.add(new MapLevel(35, 25, '\u2588'));
+        obst.add(new Obstacle(35, 20, '\u2588'));
+        obst.add(new Obstacle(35, 21, '\u2588'));
+        obst.add(new Obstacle(35, 22, '\u2588'));
+        obst.add(new Obstacle(35, 23, '\u2588'));
+        obst.add(new Obstacle(35, 24, '\u2588'));
+        obst.add(new Obstacle(35, 25, '\u2588'));
 //rad 8
-        obst.add(new MapLevel(40, 4, '\u2588'));
-        obst.add(new MapLevel(40, 5, '\u2588'));
-        obst.add(new MapLevel(40, 6, '\u2588'));
-        obst.add(new MapLevel(40, 7, '\u2588'));
-        obst.add(new MapLevel(40, 8, '\u2588'));
-        obst.add(new MapLevel(40, 9, '\u2588'));
-        obst.add(new MapLevel(40, 10, '\u2588'));
+        obst.add(new Obstacle(40, 4, '\u2588'));
+        obst.add(new Obstacle(40, 5, '\u2588'));
+        obst.add(new Obstacle(40, 6, '\u2588'));
+        obst.add(new Obstacle(40, 7, '\u2588'));
+        obst.add(new Obstacle(40, 8, '\u2588'));
+        obst.add(new Obstacle(40, 9, '\u2588'));
+        obst.add(new Obstacle(40, 10, '\u2588'));
 
-        obst.add(new MapLevel(40, 13, '\u2588'));
-        obst.add(new MapLevel(40, 14, '\u2588'));
-        obst.add(new MapLevel(40, 15, '\u2588'));
-        obst.add(new MapLevel(40, 16, '\u2588'));
-        obst.add(new MapLevel(40, 17, '\u2588'));
-        obst.add(new MapLevel(40, 18, '\u2588'));
-        obst.add(new MapLevel(40, 19, '\u2588'));
-        obst.add(new MapLevel(40, 20, '\u2588'));
+        obst.add(new Obstacle(40, 13, '\u2588'));
+        obst.add(new Obstacle(40, 14, '\u2588'));
+        obst.add(new Obstacle(40, 15, '\u2588'));
+        obst.add(new Obstacle(40, 16, '\u2588'));
+        obst.add(new Obstacle(40, 17, '\u2588'));
+        obst.add(new Obstacle(40, 18, '\u2588'));
+        obst.add(new Obstacle(40, 19, '\u2588'));
+        obst.add(new Obstacle(40, 20, '\u2588'));
         //rad 9
 
-        obst.add(new MapLevel(45, 0, '\u2588'));
-        obst.add(new MapLevel(45, 1, '\u2588'));
-        obst.add(new MapLevel(45, 2, '\u2588'));
-        obst.add(new MapLevel(45, 3, '\u2588'));
-        obst.add(new MapLevel(45, 4, '\u2588'));
+        obst.add(new Obstacle(45, 0, '\u2588'));
+        obst.add(new Obstacle(45, 1, '\u2588'));
+        obst.add(new Obstacle(45, 2, '\u2588'));
+        obst.add(new Obstacle(45, 3, '\u2588'));
+        obst.add(new Obstacle(45, 4, '\u2588'));
 
-        obst.add(new MapLevel(45, 10, '\u2588'));
-        obst.add(new MapLevel(45, 11, '\u2588'));
-        obst.add(new MapLevel(45, 12, '\u2588'));
-        obst.add(new MapLevel(45, 13, '\u2588'));
-        obst.add(new MapLevel(45, 14, '\u2588'));
-        obst.add(new MapLevel(45, 15, '\u2588'));
+        obst.add(new Obstacle(45, 10, '\u2588'));
+        obst.add(new Obstacle(45, 11, '\u2588'));
+        obst.add(new Obstacle(45, 12, '\u2588'));
+        obst.add(new Obstacle(45, 13, '\u2588'));
+        obst.add(new Obstacle(45, 14, '\u2588'));
+        obst.add(new Obstacle(45, 15, '\u2588'));
 
-        obst.add(new MapLevel(45, 20, '\u2588'));
-        obst.add(new MapLevel(45, 21, '\u2588'));
-        obst.add(new MapLevel(45, 22, '\u2588'));
-        obst.add(new MapLevel(45, 23, '\u2588'));
-        obst.add(new MapLevel(45, 24, '\u2588'));
-        obst.add(new MapLevel(45, 25, '\u2588'));
+        obst.add(new Obstacle(45, 20, '\u2588'));
+        obst.add(new Obstacle(45, 21, '\u2588'));
+        obst.add(new Obstacle(45, 22, '\u2588'));
+        obst.add(new Obstacle(45, 23, '\u2588'));
+        obst.add(new Obstacle(45, 24, '\u2588'));
+        obst.add(new Obstacle(45, 25, '\u2588'));
         //rad4
-        obst.add(new MapLevel(50, 4, '\u2588'));
-        obst.add(new MapLevel(50, 5, '\u2588'));
-        obst.add(new MapLevel(50, 6, '\u2588'));
-        obst.add(new MapLevel(50, 7, '\u2588'));
-        obst.add(new MapLevel(50, 8, '\u2588'));
-        obst.add(new MapLevel(50, 9, '\u2588'));
-        obst.add(new MapLevel(50, 10, '\u2588'));
+        obst.add(new Obstacle(50, 4, '\u2588'));
+        obst.add(new Obstacle(50, 5, '\u2588'));
+        obst.add(new Obstacle(50, 6, '\u2588'));
+        obst.add(new Obstacle(50, 7, '\u2588'));
+        obst.add(new Obstacle(50, 8, '\u2588'));
+        obst.add(new Obstacle(50, 9, '\u2588'));
+        obst.add(new Obstacle(50, 10, '\u2588'));
 
-        obst.add(new MapLevel(50, 13, '\u2588'));
-        obst.add(new MapLevel(50, 14, '\u2588'));
-        obst.add(new MapLevel(50, 15, '\u2588'));
-        obst.add(new MapLevel(50, 16, '\u2588'));
-        obst.add(new MapLevel(50, 17, '\u2588'));
-        obst.add(new MapLevel(50, 18, '\u2588'));
-        obst.add(new MapLevel(50, 19, '\u2588'));
-        obst.add(new MapLevel(50, 20, '\u2588'));
-//rad10
-        obst.add(new MapLevel(55, 0, '\u2588'));
-        obst.add(new MapLevel(55, 1, '\u2588'));
-        obst.add(new MapLevel(55, 2, '\u2588'));
-        obst.add(new MapLevel(55, 3, '\u2588'));
-        obst.add(new MapLevel(55, 4, '\u2588'));
 
-        obst.add(new MapLevel(55, 10, '\u2588'));
-        obst.add(new MapLevel(55, 11, '\u2588'));
-        obst.add(new MapLevel(55, 12, '\u2588'));
-        obst.add(new MapLevel(55, 13, '\u2588'));
-        obst.add(new MapLevel(55, 14, '\u2588'));
-        obst.add(new MapLevel(55, 15, '\u2588'));
-
-        obst.add(new MapLevel(55, 20, '\u2588'));
-        obst.add(new MapLevel(55, 21, '\u2588'));
-        obst.add(new MapLevel(55, 22, '\u2588'));
-        obst.add(new MapLevel(55, 23, '\u2588'));
-        obst.add(new MapLevel(55, 24, '\u2588'));
-        obst.add(new MapLevel(55, 25, '\u2588'));
-//rad 11
-        obst.add(new MapLevel(60, 4, '\u2588'));
-        obst.add(new MapLevel(60, 5, '\u2588'));
-        obst.add(new MapLevel(60, 6, '\u2588'));
-        obst.add(new MapLevel(60, 7, '\u2588'));
-        obst.add(new MapLevel(60, 8, '\u2588'));
-        obst.add(new MapLevel(60, 9, '\u2588'));
-        obst.add(new MapLevel(60, 10, '\u2588'));
-
-        obst.add(new MapLevel(60, 13, '\u2588'));
-        obst.add(new MapLevel(60, 14, '\u2588'));
-        obst.add(new MapLevel(60, 15, '\u2588'));
-        obst.add(new MapLevel(60, 16, '\u2588'));
-        obst.add(new MapLevel(60, 17, '\u2588'));
-        obst.add(new MapLevel(60, 18, '\u2588'));
-        obst.add(new MapLevel(60, 19, '\u2588'));
-        obst.add(new MapLevel(60, 20, '\u2588'));
-
+     
         return obst;
     }
 
