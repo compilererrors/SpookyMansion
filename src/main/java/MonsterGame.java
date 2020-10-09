@@ -183,13 +183,12 @@ public class MonsterGame {
 
     private static List<Bomb> createBombs() {
         List<Bomb> bombs = new ArrayList<>();
-        Random rBomb = new Random();
-        Bomb bombPosition = new Bomb(rBomb.nextInt(80), rBomb.nextInt(24), '\u256C');
-        Bomb bombPosition1 = new Bomb(rBomb.nextInt(80), rBomb.nextInt(24), '\u256C');
-        Bomb bombPosition2 = new Bomb(rBomb.nextInt(80), rBomb.nextInt(24), '\u26B0');
-        bombs.add(new Bomb(bombPosition.getX(), bombPosition.getY(), bombPosition.getSymbol()));
-        bombs.add(new Bomb(bombPosition1.getX(), bombPosition1.getY(), bombPosition1.getSymbol()));
-        bombs.add(new Bomb(bombPosition2.getX(), bombPosition2.getY(), bombPosition2.getSymbol()));
+        for(int i=10; i<100; i+=5){
+            int randomNum = ThreadLocalRandom.current().nextInt(5, 26);
+            Random rBomb = new Random();
+            Bomb bombPosition = new Bomb(rBomb.nextInt(i), rBomb.nextInt(randomNum), '\u26B0');
+            bombs.add(new Bomb(bombPosition.getX(), bombPosition.getY(), bombPosition.getSymbol()));
+        }
         return bombs;
     }
 
