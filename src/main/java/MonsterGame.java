@@ -17,6 +17,8 @@ public class MonsterGame {
     private static boolean playerHitPwUp = false;
     private static int score = 0;
     private static TextGraphics tg;
+    private static int offsetX = 0;
+
 
     public static void main(String[] args) throws IOException {
 
@@ -40,7 +42,7 @@ public class MonsterGame {
     private static void startGame() throws IOException, InterruptedException {
 
 
-        startMusic();
+        //startMusic();
 
         Player player = createPlayer();
 
@@ -55,8 +57,9 @@ public class MonsterGame {
         drawCharacters(terminal, player, monsters, maps, bombs, pwUps);
 
         //Test strings
+
         //tg.putString(2, 2, "JHELLO");
-        System.out.println(score);
+
 
         int index = 0;
         boolean monsterMove = true;
@@ -154,7 +157,7 @@ public class MonsterGame {
     }
 
     private static Player createPlayer() {
-        return new Player(2, 10, '\u263B');
+        return new Player(28, 10, '\u263B');
     }
 
     private static List<Monster> createMonsters() {
@@ -209,7 +212,7 @@ public class MonsterGame {
         Terminal terminal = terminalFactory.createTerminal();
         terminal.getTerminalSize();
         TerminalSize.ONE.withColumns(1);
-        TextGraphics tg = terminal.newTextGraphics();
+        tg = terminal.newTextGraphics();
         terminal.setCursorVisible(false);
 
 
@@ -218,19 +221,28 @@ public class MonsterGame {
 
     private static void drawCharacters(Terminal terminal, Player player, List<Monster> monsters, List<Obstacle> maps, List<Bomb> bombs, List<PwUp> pwUps) throws IOException {
 
-        for (Obstacle map : maps) {
-            terminal.setCursorPosition(map.getxObst(), map.getyObst());
-            terminal.putCharacter(map.getSymbolObst());
-            //tg.setForegroundColor(TextColor.ANSI.RED).putCSIStyledString(map.getxObst(), map.getyObst(), String.valueOf(map.getSymbolObst()));
+        terminal.clearScreen();
+
+        if (player.getX()+offsetX > 30) {
+            offsetX -= 1;
+        }
+
+        for (Obstacle obstacle : maps) {
+            if(obstacle.getxObst()+offsetX >= 0 && obstacle.getxObst()+offsetX < 80){
+                terminal.setCursorPosition(obstacle.getxObst()+offsetX, obstacle.getyObst());
+                terminal.putCharacter(obstacle.getSymbolObst());
+            }
+
+
         }
 
         for (Bomb bomb : bombs) {
-            terminal.setCursorPosition(bomb.getX(), bomb.getY());
+            terminal.setCursorPosition(bomb.getX()+offsetX, bomb.getY());
             terminal.putCharacter(bomb.getSymbol());
 
         }
         for (PwUp pwUp : pwUps) {
-            terminal.setCursorPosition(pwUp.getX(), pwUp.getY());
+            terminal.setCursorPosition(pwUp.getX()+offsetX, pwUp.getY());
             terminal.putCharacter(pwUp.getSymbol());
         }
 
@@ -258,6 +270,7 @@ public class MonsterGame {
                 playerHitBomb = true;
             }
         }
+        //Check if player walked in to powerup
         for (PwUp pwUpsOnMap : pwUps) {
             if (player.getX() == pwUpsOnMap.getX() && player.getY() == pwUpsOnMap.getY()) {
                 if (playerHitPwUp) {
@@ -282,12 +295,13 @@ public class MonsterGame {
 
         } else {
             // Move player
-            terminal.setCursorPosition(player.getPreviousX(), player.getPreviousY());
-            terminal.putCharacter(' ');
 
-            terminal.setCursorPosition(player.getX(), player.getY());
+
+            terminal.setCursorPosition(player.getX()+offsetX, player.getY());
             terminal.putCharacter(player.getSymbol());
         }
+
+
 
 
         boolean monsterMovedIntoObstacle = false;
@@ -308,9 +322,7 @@ public class MonsterGame {
 
         // Move monster
         for (Monster monster : monsters) {
-            terminal.setCursorPosition(monster.getPreviousX(), monster.getPreviousY());
-            terminal.putCharacter(' ');
-            terminal.setCursorPosition(monster.getX(), monster.getY());
+            terminal.setCursorPosition(monster.getX()+offsetX, monster.getY());
             terminal.putCharacter(monster.getSymbol());
         }
 
@@ -370,10 +382,10 @@ public class MonsterGame {
         obst.add(new Obstacle(4, 16, '\u2588'));
         obst.add(new Obstacle(4, 17, '\u2588'));
         obst.add(new Obstacle(4, 18, '\u2588'));
-        obst.add(new Obstacle(4, 19, '\u2588'));
-        obst.add(new Obstacle(4, 22, '\u2588'));
-        obst.add(new Obstacle(4, 23, '\u2588'));
-        obst.add(new Obstacle(4, 24, '\u2588'));
+        obst.add(new Obstacle(109, 19, '\u2588'));
+        obst.add(new Obstacle(98, 22, '\u2588'));
+        obst.add(new Obstacle(90, 23, '\u2588'));
+        obst.add(new Obstacle(81, 24, '\u2588'));
 
 
         obst.add(new Obstacle(8, 3, '\u2588'));
