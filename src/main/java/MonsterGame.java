@@ -372,194 +372,27 @@ public class MonsterGame {
 
     private static List<Obstacle> createObst() {
          List<Obstacle> obst = new ArrayList<>();
-        //högersida
-        //rad1
-        obst.add(new Obstacle(5, 0, '\u2588'));
-        obst.add(new Obstacle(5, 1, '\u2588'));
-        obst.add(new Obstacle(5, 2, '\u2588'));
-        obst.add(new Obstacle(5, 3, '\u2588'));
-        obst.add(new Obstacle(5, 4, '\u2588'));
 
+        for(int j=0; j<200; j+=20) {
+            for (int i = 0; i < 6; i++) {
+                obst.add(new Obstacle(j, i, '\u2588'));
+            }
+            for (int i = 10; i < 16; i++) {
+                obst.add(new Obstacle(j, i, '\u2588'));
+            }
+            for (int i = 20; i < 26; i++) {
+                obst.add(new Obstacle(j, i, '\u2588'));
+            }
+        }
 
-        obst.add(new Obstacle(5, 10, '\u2588'));
-        obst.add(new Obstacle(5, 11, '\u2588'));
-        obst.add(new Obstacle(5, 12, '\u2588'));
-        obst.add(new Obstacle(5, 13, '\u2588'));
-        obst.add(new Obstacle(5, 14, '\u2588'));
-        obst.add(new Obstacle(5, 15, '\u2588'));
-
-        obst.add(new Obstacle(5, 20, '\u2588'));
-        obst.add(new Obstacle(5, 21, '\u2588'));
-        obst.add(new Obstacle(5, 22, '\u2588'));
-        obst.add(new Obstacle(5, 23, '\u2588'));
-        obst.add(new Obstacle(5, 24, '\u2588'));
-        obst.add(new Obstacle(5, 25, '\u2588'));
-//rad 2
-        obst.add(new Obstacle(10, 4, '\u2588'));
-        obst.add(new Obstacle(10, 5, '\u2588'));
-        obst.add(new Obstacle(10, 6, '\u2588'));
-        obst.add(new Obstacle(10, 7, '\u2588'));
-        obst.add(new Obstacle(10, 8, '\u2588'));
-        obst.add(new Obstacle(10, 9, '\u2588'));
-        obst.add(new Obstacle(10, 10, '\u2588'));
-
-        obst.add(new Obstacle(10, 13, '\u2588'));
-        obst.add(new Obstacle(10, 14, '\u2588'));
-        obst.add(new Obstacle(10, 15, '\u2588'));
-        obst.add(new Obstacle(10, 16, '\u2588'));
-        obst.add(new Obstacle(10, 17, '\u2588'));
-        obst.add(new Obstacle(10, 18, '\u2588'));
-        obst.add(new Obstacle(10, 19, '\u2588'));
-        obst.add(new Obstacle(10, 20, '\u2588'));
-        //rad 3
-
-        obst.add(new Obstacle(15, 0, '\u2588'));
-        obst.add(new Obstacle(15, 1, '\u2588'));
-        obst.add(new Obstacle(15, 2, '\u2588'));
-        obst.add(new Obstacle(15, 3, '\u2588'));
-        obst.add(new Obstacle(15, 4, '\u2588'));
-
-        obst.add(new Obstacle(15, 10, '\u2588'));
-        obst.add(new Obstacle(15, 11, '\u2588'));
-        obst.add(new Obstacle(15, 12, '\u2588'));
-        obst.add(new Obstacle(15, 13, '\u2588'));
-        obst.add(new Obstacle(15, 14, '\u2588'));
-        obst.add(new Obstacle(15, 15, '\u2588'));
-
-        obst.add(new Obstacle(15, 20, '\u2588'));
-        obst.add(new Obstacle(15, 21, '\u2588'));
-        obst.add(new Obstacle(15, 22, '\u2588'));
-        obst.add(new Obstacle(15, 23, '\u2588'));
-        obst.add(new Obstacle(15, 24, '\u2588'));
-        obst.add(new Obstacle(15, 25, '\u2588'));
-        //rad4
-        obst.add(new Obstacle(20, 4, '\u2588'));
-        obst.add(new Obstacle(20, 5, '\u2588'));
-        obst.add(new Obstacle(20, 6, '\u2588'));
-        obst.add(new Obstacle(20, 7, '\u2588'));
-        obst.add(new Obstacle(20, 8, '\u2588'));
-        obst.add(new Obstacle(20, 9, '\u2588'));
-        obst.add(new Obstacle(20, 10, '\u2588'));
-
-        obst.add(new Obstacle(20, 13, '\u2588'));
-        obst.add(new Obstacle(20, 14, '\u2588'));
-        obst.add(new Obstacle(20, 15, '\u2588'));
-        obst.add(new Obstacle(20, 16, '\u2588'));
-        obst.add(new Obstacle(20, 17, '\u2588'));
-        obst.add(new Obstacle(20, 18, '\u2588'));
-        obst.add(new Obstacle(20, 19, '\u2588'));
-        obst.add(new Obstacle(20, 20, '\u2588'));
-//rad5
-        obst.add(new Obstacle(25, 0, '\u2588'));
-        obst.add(new Obstacle(25, 1, '\u2588'));
-        obst.add(new Obstacle(25, 2, '\u2588'));
-        obst.add(new Obstacle(25, 3, '\u2588'));
-        obst.add(new Obstacle(25, 4, '\u2588'));
-
-
-        obst.add(new Obstacle(25, 10, '\u2588'));
-        obst.add(new Obstacle(25, 11, '\u2588'));
-        obst.add(new Obstacle(25, 12, '\u2588'));
-        obst.add(new Obstacle(25, 13, '\u2588'));
-        obst.add(new Obstacle(25, 14, '\u2588'));
-        obst.add(new Obstacle(25, 15, '\u2588'));
-
-        obst.add(new Obstacle(25, 20, '\u2588'));
-        obst.add(new Obstacle(25, 21, '\u2588'));
-        obst.add(new Obstacle(25, 22, '\u2588'));
-        obst.add(new Obstacle(25, 23, '\u2588'));
-        obst.add(new Obstacle(25, 24, '\u2588'));
-        obst.add(new Obstacle(25, 25, '\u2588'));
-//rad 6
-        obst.add(new Obstacle(30, 4, '\u2588'));
-        obst.add(new Obstacle(30, 5, '\u2588'));
-        obst.add(new Obstacle(30, 6, '\u2588'));
-        obst.add(new Obstacle(30, 7, '\u2588'));
-        obst.add(new Obstacle(30, 8, '\u2588'));
-        obst.add(new Obstacle(30, 9, '\u2588'));
-        obst.add(new Obstacle(30, 10, '\u2588'));
-
-        obst.add(new Obstacle(30, 13, '\u2588'));
-        obst.add(new Obstacle(30, 14, '\u2588'));
-        obst.add(new Obstacle(30, 15, '\u2588'));
-        obst.add(new Obstacle(30, 16, '\u2588'));
-        obst.add(new Obstacle(30, 17, '\u2588'));
-        obst.add(new Obstacle(30, 18, '\u2588'));
-        obst.add(new Obstacle(30, 19, '\u2588'));
-        obst.add(new Obstacle(30, 20, '\u2588'));
-
-        //vänstersida
-
-        //rad7
-        obst.add(new Obstacle(35, 0, '\u2588'));
-        obst.add(new Obstacle(35, 1, '\u2588'));
-        obst.add(new Obstacle(35, 2, '\u2588'));
-        obst.add(new Obstacle(35, 3, '\u2588'));
-        obst.add(new Obstacle(35, 4, '\u2588'));
-
-
-        obst.add(new Obstacle(35, 10, '\u2588'));
-        obst.add(new Obstacle(35, 11, '\u2588'));
-        obst.add(new Obstacle(35, 12, '\u2588'));
-        obst.add(new Obstacle(35, 13, '\u2588'));
-        obst.add(new Obstacle(35, 14, '\u2588'));
-        obst.add(new Obstacle(35, 15, '\u2588'));
-
-        obst.add(new Obstacle(35, 20, '\u2588'));
-        obst.add(new Obstacle(35, 21, '\u2588'));
-        obst.add(new Obstacle(35, 22, '\u2588'));
-        obst.add(new Obstacle(35, 23, '\u2588'));
-        obst.add(new Obstacle(35, 24, '\u2588'));
-        obst.add(new Obstacle(35, 25, '\u2588'));
-//rad 8
-        obst.add(new Obstacle(40, 4, '\u2588'));
-        obst.add(new Obstacle(40, 5, '\u2588'));
-        obst.add(new Obstacle(40, 6, '\u2588'));
-        obst.add(new Obstacle(40, 7, '\u2588'));
-        obst.add(new Obstacle(40, 8, '\u2588'));
-        obst.add(new Obstacle(40, 9, '\u2588'));
-        obst.add(new Obstacle(40, 10, '\u2588'));
-
-        obst.add(new Obstacle(40, 13, '\u2588'));
-        obst.add(new Obstacle(40, 14, '\u2588'));
-        obst.add(new Obstacle(40, 15, '\u2588'));
-        obst.add(new Obstacle(40, 16, '\u2588'));
-        obst.add(new Obstacle(40, 17, '\u2588'));
-        obst.add(new Obstacle(40, 18, '\u2588'));
-        obst.add(new Obstacle(40, 19, '\u2588'));
-        obst.add(new Obstacle(40, 20, '\u2588'));
-        //rad 9
-
-        obst.add(new Obstacle(45, 0, '\u2588'));
-        obst.add(new Obstacle(45, 1, '\u2588'));
-        obst.add(new Obstacle(45, 2, '\u2588'));
-        obst.add(new Obstacle(45, 3, '\u2588'));
-        obst.add(new Obstacle(45, 4, '\u2588'));
-
-        obst.add(new Obstacle(45, 10, '\u2588'));
-        obst.add(new Obstacle(45, 11, '\u2588'));
-        obst.add(new Obstacle(45, 12, '\u2588'));
-        obst.add(new Obstacle(45, 13, '\u2588'));
-        obst.add(new Obstacle(45, 14, '\u2588'));
-        obst.add(new Obstacle(45, 15, '\u2588'));
-
-        obst.add(new Obstacle(45, 20, '\u2588'));
-        obst.add(new Obstacle(45, 21, '\u2588'));
-        obst.add(new Obstacle(45, 22, '\u2588'));
-        obst.add(new Obstacle(45, 23, '\u2588'));
-        obst.add(new Obstacle(45, 24, '\u2588'));
-        obst.add(new Obstacle(45, 25, '\u2588'));
-        //rad4
-        obst.add(new Obstacle(50, 4, '\u2588'));
-        obst.add(new Obstacle(50, 5, '\u2588'));
-        obst.add(new Obstacle(50, 6, '\u2588'));
-        obst.add(new Obstacle(50, 7, '\u2588'));
-        obst.add(new Obstacle(50, 8, '\u2588'));
-        obst.add(new Obstacle(50, 9, '\u2588'));
-        obst.add(new Obstacle(50, 10, '\u2588'));
-
-
-     
+        for(int j=10; j<200; j+=20) {
+            for (int i = 6; i < 12; i++) {
+                obst.add(new Obstacle(j, i, '\u2588'));
+            }
+            for (int i = 16; i < 24; i++) {
+                obst.add(new Obstacle(j, i, '\u2588'));
+            }
+        }
         return obst;
     }
 
