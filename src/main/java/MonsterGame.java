@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class MonsterGame {
     private static KeyStroke latestKeyStroke = null;
@@ -194,16 +195,12 @@ public class MonsterGame {
 
     private static List<PwUp> createPwUps() {
         List<PwUp> pwUps = new ArrayList<>();
-        Random pwUp = new Random();
-        PwUp pwUp1 = new PwUp(pwUp.nextInt(80), pwUp.nextInt(24), '\u2604');
-        PwUp pwUp2 = new PwUp(pwUp.nextInt(80), pwUp.nextInt(24), '\u26A1');
-        PwUp pwUp3 = new PwUp(pwUp.nextInt(80), pwUp.nextInt(24), '\u2B50');
-        PwUp pwUp4 = new PwUp(pwUp.nextInt(80), pwUp.nextInt(24), '\u2604');
-        pwUps.add(new PwUp(pwUp1.getX(), pwUp1.getY(), pwUp1.getSymbol()));
-        pwUps.add(new PwUp(pwUp2.getX(), pwUp2.getY(), pwUp2.getSymbol()));
-        pwUps.add(new PwUp(pwUp3.getX(), pwUp3.getY(), pwUp3.getSymbol()));
-        pwUps.add(new PwUp(pwUp4.getX(), pwUp4.getY(), pwUp4.getSymbol()));
-
+        for(int i=10; i<200; i+=5){
+            int randomNum = ThreadLocalRandom.current().nextInt(5, 26);
+            Random randompwUp = new Random();
+            PwUp pwUp1 = new PwUp(randompwUp.nextInt(i), randompwUp.nextInt(randomNum), '\u2604');
+            pwUps.add(new PwUp(pwUp1.getX(), pwUp1.getY(), pwUp1.getSymbol()));
+        }
         return pwUps;
     }
 
@@ -257,7 +254,7 @@ public class MonsterGame {
 
         // Detect if monster tries to run into obstacle
         //boolean monsterMovedIntoObstacle = false;
-        for (Obstacle map : maps) {
+      /*  for (Obstacle map : maps) {
             for (Monster monster : monsters) {
                 if (map.getxObst() == monster.getX() && map.getyObst() == monster.getY()) {
                     monster.setX(monster.getPreviousX());
@@ -265,7 +262,7 @@ public class MonsterGame {
 
                 }
             }
-        }
+        }*/
 
         //Detect if Monster moved in to monster
         for (Monster monster : monsters) {
