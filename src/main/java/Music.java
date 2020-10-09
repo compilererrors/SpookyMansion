@@ -4,7 +4,7 @@ import java.io.IOException;
 
 public class Music implements Runnable {
 
-    private String fileLocation = "backgroundmusic.wav";
+    private String fileLocation = "haunted1.wav";
 
     public Music() {
     }
