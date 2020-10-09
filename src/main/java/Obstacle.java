@@ -1,4 +1,4 @@
-public class MapLevel {
+public class Obstacle {
 
 
     private int xObst;
@@ -6,7 +6,7 @@ public class MapLevel {
     private char symbolObst;
 
 
-    public MapLevel(int x, int y, char symbol) {
+    public Obstacle(int x, int y, char symbol) {
         this.xObst = x;
         this.yObst = y;
         this.symbolObst = symbol;
