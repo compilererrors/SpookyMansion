@@ -4,6 +4,7 @@ public class Monster {
     private char symbol;
     private int previousX;
     private int previousY;
+    private boolean monsterMovedIntoObstacle = false;
 
     public Monster(int x, int y, char symbol) {
         this.x = x;
@@ -11,6 +12,14 @@ public class Monster {
         this.symbol = symbol;
         this.previousX = x;
         this.previousY = y;
+    }
+
+    public boolean hasMonsterMovedIntoObstacle() {
+        return monsterMovedIntoObstacle;
+    }
+
+    public void setMonsterMovedIntoObstacle(boolean monsterMovedIntoObstacle) {
+        this.monsterMovedIntoObstacle = monsterMovedIntoObstacle;
     }
 
     public void setX(int x) {

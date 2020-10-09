@@ -44,6 +44,7 @@ public class MonsterGame {
     private static void startGame() throws IOException, InterruptedException {
 
 
+       startMusic();
 
         Player player = createPlayer();
 
@@ -57,11 +58,13 @@ public class MonsterGame {
 
         drawCharacters(terminal, player, monsters, maps, bombs, pwUps);
 
-        tg.setForegroundColor(TextColor.ANSI.RED).putCSIStyledString(15,15, "hello");
+        //Test strings
+        //tg.setForegroundColor(TextColor.ANSI.RED).putCSIStyledString(1,1, "hello");
+        System.out.println(score);
 
         int index = 0;
         boolean monsterMove=true;
-        System.out.println(score);
+
 
         do {
            index++;
@@ -248,11 +251,11 @@ public class MonsterGame {
         }
 
         // Detect if monster tries to run into obstacle
-        boolean monsterMovedIntoObstacle = false;
+        //boolean monsterMovedIntoObstacle = false;
         for (MapLevel map : maps) {
             for (Monster monster : monsters) {
                 if (map.getxObst() == monster.getX() && map.getyObst() == monster.getY()) {
-                    monsterMovedIntoObstacle = true;
+                    monster.setMonsterMovedIntoObstacle(true);
                 }
             }
         }
@@ -274,6 +277,7 @@ public class MonsterGame {
                     else if (playerHitPwUp = false) {
                     score += 10;
                     }
+                    //This will be triggered after if's are done
                     playerHitBomb = false;
                     playerHitPwUp = true;
 
@@ -296,23 +300,30 @@ public class MonsterGame {
         }
 
 
-            if (monsterMovedIntoObstacle) {
-                for (Monster monster : monsters) {
-                // Restore monster's position
-                monster.setX(monster.getPreviousX());
-                monster.setY(monster.getPreviousY());
+
+        boolean monsterMovedIntoObstacle = false;
+        for (MapLevel map : maps) {
+            for (Monster monster : monsters) {
+                if (map.getxObst() == monster.getX() && map.getyObst() == monster.getY()) {
+                    monsterMovedIntoObstacle = true;
+                    // Restore monster's position
+                    monster.setX(monster.getPreviousX());
+                    monster.setY(monster.getPreviousY());
+                }
 
             }
-            }else {
+        }
+
+            //Move monster or not depending on boolean
+
+
                 // Move monster
                 for (Monster monster : monsters) {
                     terminal.setCursorPosition(monster.getPreviousX(), monster.getPreviousY());
                     terminal.putCharacter(' ');
-
                     terminal.setCursorPosition(monster.getX(), monster.getY());
                     terminal.putCharacter(monster.getSymbol());
                 }
-            }
 
 
         terminal.flush();
@@ -348,6 +359,13 @@ public class MonsterGame {
 
     }
 }
+
+    private static void startMusic() {
+        // Exemple of playing background music in new thread, just use Music class and these 2 lines:
+        Thread thread = new Thread(new Music());
+        thread.start();
+    }
+
     private static List<MapLevel> createObst() {
         List<MapLevel> obst = new ArrayList<>();
         obst.add(new MapLevel(4, 0, '\u2588'));
