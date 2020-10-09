@@ -1,4 +1,5 @@
 import com.googlecode.lanterna.TerminalPosition;
+import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.input.KeyStroke;
@@ -19,6 +20,7 @@ public class MonsterGame {
     private static boolean playerHitBomb = false;
     private static boolean playerHitPwUp = false;
     private static int score = 0;
+    private static TextGraphics tg;
 
    public static void main(String[] args) throws IOException {
 
@@ -42,6 +44,7 @@ public class MonsterGame {
     private static void startGame() throws IOException, InterruptedException {
 
 
+       startMusic();
 
         Player player = createPlayer();
 
@@ -55,11 +58,13 @@ public class MonsterGame {
 
         drawCharacters(terminal, player, monsters, maps, bombs, pwUps);
 
+        //Test strings
 
+        System.out.println(score);
 
         int index = 0;
         boolean monsterMove=true;
-        System.out.println(score);
+
 
         do {
            index++;
@@ -163,14 +168,20 @@ public class MonsterGame {
 
     private static List<Monster> createMonsters() {
         List<Monster> monsters = new ArrayList<>();
-        Monster monster1 = new Monster(10,3, 'X');
-        Monster monster2 = new Monster(20,3, 'X');
-        Monster monster3 = new Monster(30,3, 'X');
-        Monster monster4 = new Monster(40,3, 'X');
-        monsters.add(new Monster(monster1.getX(), monster1.getY(),'X'));
-        monsters.add(new Monster(monster2.getX(), monster2.getY(),'X'));
-        monsters.add(new Monster(monster3.getX(), monster3.getY(),'X'));
-        monsters.add(new Monster(monster4.getX(), monster4.getY(),'X'));
+        Monster monster1 = new Monster(40,3, '\u26F9');
+        Monster monster2 = new Monster(42,3, '\u26F7');
+        Monster monster3 = new Monster(44,3, '\u26C4');
+        Monster monster4 = new Monster(46,3, '\u2603');
+        Monster monster5 = new Monster(48,3, '\u2622');
+        Monster monster6 = new Monster(50,3, '\u2623');
+        Monster monster7 = new Monster(52,3, '\u26F9');
+        monsters.add(new Monster(monster1.getX(), monster1.getY(),monster1.getSymbol()));
+        monsters.add(new Monster(monster2.getX(), monster2.getY(),monster2.getSymbol()));
+        monsters.add(new Monster(monster3.getX(), monster3.getY(),monster3.getSymbol()));
+        monsters.add(new Monster(monster4.getX(), monster4.getY(),monster4.getSymbol()));
+        monsters.add(new Monster(monster5.getX(), monster5.getY(),monster5.getSymbol()));
+        monsters.add(new Monster(monster6.getX(), monster6.getY(),monster6.getSymbol()));
+        monsters.add(new Monster(monster7.getX(), monster7.getY(),monster7.getSymbol()));
 
         return monsters;
     }
@@ -180,10 +191,10 @@ public class MonsterGame {
         Random rBomb = new Random();
         Bomb bombPosition = new Bomb(rBomb.nextInt(80), rBomb.nextInt(24), '\u256C');
         Bomb bombPosition1 = new Bomb(rBomb.nextInt(80), rBomb.nextInt(24), '\u256C');
-        Bomb bombPosition2 = new Bomb(rBomb.nextInt(80), rBomb.nextInt(24), '\u256C');
-        bombs.add(new Bomb(bombPosition.getX(), bombPosition.getY(), '\u256C'));
-        bombs.add(new Bomb(bombPosition1.getX(), bombPosition1.getY(), '\u256C'));
-        bombs.add(new Bomb(bombPosition2.getX(), bombPosition2.getY(), '\u256C'));
+        Bomb bombPosition2 = new Bomb(rBomb.nextInt(80), rBomb.nextInt(24), '\u26B0');
+        bombs.add(new Bomb(bombPosition.getX(), bombPosition.getY(), bombPosition.getSymbol()));
+        bombs.add(new Bomb(bombPosition1.getX(), bombPosition1.getY(), bombPosition1.getSymbol()));
+        bombs.add(new Bomb(bombPosition2.getX(), bombPosition2.getY(), bombPosition2.getSymbol()));
         return bombs;
     }
 
@@ -191,9 +202,13 @@ public class MonsterGame {
         List<PwUp> pwUps = new ArrayList<>();
         Random pwUp = new Random();
         PwUp pwUp1 = new PwUp(pwUp.nextInt(80), pwUp.nextInt(24), '\u2604');
-        PwUp pwUp2 = new PwUp(pwUp.nextInt(80), pwUp.nextInt(24), '\u2604');
-        pwUps.add(new PwUp(pwUp1.getX(), pwUp1.getY(), '\u2615'));
-        pwUps.add(new PwUp(pwUp2.getX(), pwUp2.getY(), '\u2615'));
+        PwUp pwUp2 = new PwUp(pwUp.nextInt(80), pwUp.nextInt(24), '\u26A1');
+        PwUp pwUp3 = new PwUp(pwUp.nextInt(80), pwUp.nextInt(24), '\u2B50');
+        PwUp pwUp4 = new PwUp(pwUp.nextInt(80), pwUp.nextInt(24), '\u2604');
+        pwUps.add(new PwUp(pwUp1.getX(), pwUp1.getY(), pwUp1.getSymbol()));
+        pwUps.add(new PwUp(pwUp2.getX(), pwUp2.getY(), pwUp2.getSymbol()));
+        pwUps.add(new PwUp(pwUp3.getX(), pwUp3.getY(), pwUp3.getSymbol()));
+        pwUps.add(new PwUp(pwUp4.getX(), pwUp4.getY(), pwUp4.getSymbol()));
 
         return pwUps;
     }
@@ -213,11 +228,13 @@ public class MonsterGame {
         for (MapLevel map : maps) {
             terminal.setCursorPosition(map.getxObst(), map.getyObst());
             terminal.putCharacter(map.getSymbolObst());
+            //tg.setForegroundColor(TextColor.ANSI.RED).putCSIStyledString(map.getxObst(), map.getyObst(), String.valueOf(map.getSymbolObst()));
         }
 
         for (Bomb bomb : bombs) {
             terminal.setCursorPosition(bomb.getX(), bomb.getY());
             terminal.putCharacter(bomb.getSymbol());
+
         }
         for (PwUp pwUp : pwUps) {
             terminal.setCursorPosition(pwUp.getX(), pwUp.getY());
@@ -234,16 +251,14 @@ public class MonsterGame {
         }
 
         // Detect if monster tries to run into obstacle
-        boolean monsterMovedIntoObstacle = false;
+        //boolean monsterMovedIntoObstacle = false;
         for (MapLevel map : maps) {
             for (Monster monster : monsters) {
                 if (map.getxObst() == monster.getX() && map.getyObst() == monster.getY()) {
-                    monsterMovedIntoObstacle = true;
+                 monsterMovedIntoObstacle = true;
 
 
-                            // Restore monster's position
-                            monster.setX(monster.getPreviousX());
-                            monster.setY(monster.getPreviousY());
+                         
 
 
                 }
@@ -267,6 +282,7 @@ public class MonsterGame {
                     else if (playerHitPwUp = false) {
                     score += 10;
                     }
+                    //This will be triggered after if's are done
                     playerHitBomb = false;
                     playerHitPwUp = true;
 
@@ -289,28 +305,36 @@ public class MonsterGame {
         }
 
 
-           /* if (monsterMovedIntoObstacle) {
-                for (Monster monster : monsters) {
-                // Restore monster's position
-                monster.setX(monster.getPreviousX());
-                monster.setY(monster.getPreviousY());
+                           // Move monster
+
+        boolean monsterMovedIntoObstacle = false;
+        for (MapLevel map : maps) {
+            for (Monster monster : monsters) {
+                if (map.getxObst() == monster.getX() && map.getyObst() == monster.getY()) {
+                    monsterMovedIntoObstacle = true;
+                    // Restore monster's position
+                    monster.setX(monster.getPreviousX());
+                    monster.setY(monster.getPreviousY());
+                }
 
             }
-            }else {*/
+        }
+
+            //Move monster or not depending on boolean
+
+
                 // Move monster
                 for (Monster monster : monsters) {
                     terminal.setCursorPosition(monster.getPreviousX(), monster.getPreviousY());
                     terminal.putCharacter(' ');
-
                     terminal.setCursorPosition(monster.getX(), monster.getY());
                     terminal.putCharacter(monster.getSymbol());
                 }
-            }
 
 
-   //     terminal.flush();
+       terminal.flush();
 
-  //  }
+    }
 
     private static boolean isPlayerAlive(Player player, List<Monster> monsters) {
         for (Monster monster : monsters) {
@@ -341,6 +365,13 @@ public class MonsterGame {
 
     }
 }
+
+    private static void startMusic() {
+        // Exemple of playing background music in new thread, just use Music class and these 2 lines:
+        Thread thread = new Thread(new Music());
+        thread.start();
+    }
+
     private static List<MapLevel> createObst() {
         List<MapLevel> obst = new ArrayList<>();
         obst.add(new MapLevel(4, 0, '\u2588'));

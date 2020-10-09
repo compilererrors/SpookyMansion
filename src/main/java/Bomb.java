@@ -3,6 +3,7 @@ public class Bomb {
     private int y;
     private char symbol;
 
+
     public Bomb(int x, int y, char symbol) {
         this.x = x;
         this.y = y;
