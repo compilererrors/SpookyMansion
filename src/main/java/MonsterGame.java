@@ -1,4 +1,5 @@
 import com.googlecode.lanterna.TerminalPosition;
+import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.input.KeyStroke;
@@ -19,6 +20,7 @@ public class MonsterGame {
     private static boolean playerHitBomb = false;
     private static boolean playerHitPwUp = false;
     private static int score = 0;
+    private static TextGraphics tg;
 
    public static void main(String[] args) throws IOException {
 
@@ -163,14 +165,20 @@ public class MonsterGame {
 
     private static List<Monster> createMonsters() {
         List<Monster> monsters = new ArrayList<>();
-        Monster monster1 = new Monster(10,3, 'X');
-        Monster monster2 = new Monster(20,3, 'X');
-        Monster monster3 = new Monster(30,3, 'X');
-        Monster monster4 = new Monster(40,3, 'X');
-        monsters.add(new Monster(monster1.getX(), monster1.getY(),'X'));
-        monsters.add(new Monster(monster2.getX(), monster2.getY(),'X'));
-        monsters.add(new Monster(monster3.getX(), monster3.getY(),'X'));
-        monsters.add(new Monster(monster4.getX(), monster4.getY(),'X'));
+        Monster monster1 = new Monster(40,3, '\u26F9');
+        Monster monster2 = new Monster(42,3, '\u26F7');
+        Monster monster3 = new Monster(44,3, '\u26C4');
+        Monster monster4 = new Monster(46,3, '\u2603');
+        Monster monster5 = new Monster(48,3, '\u2622');
+        Monster monster6 = new Monster(50,3, '\u2623');
+        Monster monster7 = new Monster(52,3, '\u26B0');
+        monsters.add(new Monster(monster1.getX(), monster1.getY(),monster1.getSymbol()));
+        monsters.add(new Monster(monster2.getX(), monster2.getY(),monster2.getSymbol()));
+        monsters.add(new Monster(monster3.getX(), monster3.getY(),monster3.getSymbol()));
+        monsters.add(new Monster(monster4.getX(), monster4.getY(),monster4.getSymbol()));
+        monsters.add(new Monster(monster5.getX(), monster5.getY(),monster5.getSymbol()));
+        monsters.add(new Monster(monster6.getX(), monster6.getY(),monster6.getSymbol()));
+        monsters.add(new Monster(monster7.getX(), monster7.getY(),monster7.getSymbol()));
 
         return monsters;
     }
@@ -181,9 +189,9 @@ public class MonsterGame {
         Bomb bombPosition = new Bomb(rBomb.nextInt(80), rBomb.nextInt(24), '\u256C');
         Bomb bombPosition1 = new Bomb(rBomb.nextInt(80), rBomb.nextInt(24), '\u256C');
         Bomb bombPosition2 = new Bomb(rBomb.nextInt(80), rBomb.nextInt(24), '\u256C');
-        bombs.add(new Bomb(bombPosition.getX(), bombPosition.getY(), '\u256C'));
-        bombs.add(new Bomb(bombPosition1.getX(), bombPosition1.getY(), '\u256C'));
-        bombs.add(new Bomb(bombPosition2.getX(), bombPosition2.getY(), '\u256C'));
+        bombs.add(new Bomb(bombPosition.getX(), bombPosition.getY(), bombPosition.getSymbol()));
+        bombs.add(new Bomb(bombPosition1.getX(), bombPosition1.getY(), bombPosition1.getSymbol()));
+        bombs.add(new Bomb(bombPosition2.getX(), bombPosition2.getY(), bombPosition2.getSymbol()));
         return bombs;
     }
 
@@ -202,6 +210,7 @@ public class MonsterGame {
         DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory();
         Terminal terminal = terminalFactory.createTerminal();
         TextGraphics tg = terminal.newTextGraphics();
+        TerminalSize ts = terminal.getTerminalSize();
         terminal.setCursorVisible(false);
 
 
@@ -213,11 +222,13 @@ public class MonsterGame {
         for (MapLevel map : maps) {
             terminal.setCursorPosition(map.getxObst(), map.getyObst());
             terminal.putCharacter(map.getSymbolObst());
+            //tg.setForegroundColor(TextColor.ANSI.RED).putCSIStyledString(map.getxObst(), map.getyObst(), String.valueOf(map.getSymbolObst()));
         }
 
         for (Bomb bomb : bombs) {
             terminal.setCursorPosition(bomb.getX(), bomb.getY());
             terminal.putCharacter(bomb.getSymbol());
+
         }
         for (PwUp pwUp : pwUps) {
             terminal.setCursorPosition(pwUp.getX(), pwUp.getY());
