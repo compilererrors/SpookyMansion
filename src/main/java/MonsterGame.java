@@ -209,15 +209,18 @@ public class MonsterGame {
 
     private static Terminal createTerminal() throws IOException {
         DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory();
+        terminalFactory.setInitialTerminalSize(TerminalSize.ONE.withColumns(80).withRows(30));
+        terminalFactory.setInitialTerminalSize(TerminalSize.ZERO.withColumns(80).withRows(30));
         Terminal terminal = terminalFactory.createTerminal();
-        terminal.getTerminalSize();
-        TerminalSize.ONE.withColumns(1);
+
         tg = terminal.newTextGraphics();
         terminal.setCursorVisible(false);
 
 
         return terminal;
     }
+
+
 
     private static void drawCharacters(Terminal terminal, Player player, List<Monster> monsters, List<Obstacle> maps, List<Bomb> bombs, List<PwUp> pwUps) throws IOException {
 
@@ -342,9 +345,12 @@ public class MonsterGame {
     }
 
     private static void scoreScreen(Terminal terminal) throws IOException {
+        tg.drawLine(0,26,80,26, '\u2588');
+
+
         String stringScore = "Score: " + Integer.toString(score);
         for (int i = 0; i < stringScore.length(); i++) {
-            terminal.setCursorPosition(i, 30);
+            terminal.setCursorPosition(i, 27);
             terminal.putCharacter(stringScore.charAt(i));
             terminal.flush();
         }
