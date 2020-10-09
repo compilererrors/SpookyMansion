@@ -19,6 +19,8 @@ public class MonsterGame {
     private static int score = 0;
     private static TextGraphics tg;
     private static int offsetX = 0;
+    private static int pwUpsTaken = 0;
+    private static int bombsTaken = 0;
 
 
     public static void main(String[] args) throws IOException {
@@ -184,7 +186,7 @@ public class MonsterGame {
     private static List<Bomb> createBombs() {
         List<Bomb> bombs = new ArrayList<>();
         for(int i=10; i<100; i+=5){
-            int randomNum = ThreadLocalRandom.current().nextInt(15, 30);
+            int randomNum = ThreadLocalRandom.current().nextInt(15, 29);
             Random rBomb = new Random();
             Bomb bombPosition = new Bomb(rBomb.nextInt(i), rBomb.nextInt(randomNum), '\u26B0');
             bombs.add(new Bomb(bombPosition.getX(), bombPosition.getY(), bombPosition.getSymbol()));
@@ -195,7 +197,7 @@ public class MonsterGame {
     private static List<PwUp> createPwUps() {
         List<PwUp> pwUps = new ArrayList<>();
         for(int i=10; i<200; i+=5){
-            int randomNum = ThreadLocalRandom.current().nextInt(15, 30);
+            int randomNum = ThreadLocalRandom.current().nextInt(15, 29);
             Random randompwUp = new Random();
             PwUp pwUp1 = new PwUp(randompwUp.nextInt(i), randompwUp.nextInt(randomNum), '\u2604');
             pwUps.add(new PwUp(pwUp1.getX(), pwUp1.getY(), pwUp1.getSymbol()));
@@ -308,6 +310,22 @@ public class MonsterGame {
             }
         }
 
+        for (Bomb bomb : bombs) {
+            if (bomb.getX() == player.getX() && bomb.getY() == player.getY()) {
+                bombsTaken += 1;
+                calcScore("bomb");
+
+            }
+        }
+        for (PwUp pwUps1 : pwUps) {
+            if (pwUps1.getX() == player.getX() && pwUps1.getY() == player.getY()) {
+                calcScore("pwup");
+                pwUpsTaken += 1;
+
+            }
+        }
+
+
 
         if (playerMovedIntoObstacle) {
             // Restore player's position
@@ -347,6 +365,8 @@ public class MonsterGame {
     private static void scoreScreen(Terminal terminal) throws IOException {
         tg.drawLine(0,26,80,26, '\u2588');
 
+        tg.putString(0,28, "Powerups: " + pwUpsTaken);
+        tg.putString(0,29, "Bombs : " + bombsTaken);
 
         String stringScore = "Score: " + Integer.toString(score);
         for (int i = 0; i < stringScore.length(); i++) {
@@ -354,6 +374,17 @@ public class MonsterGame {
             terminal.putCharacter(stringScore.charAt(i));
             terminal.flush();
         }
+
+    }
+    private static void calcScore(String bombOrPwUp) {
+        String kind = bombOrPwUp;
+        if (kind.equals("bomb")) {
+            bombsTaken += 1;
+        }
+        if (kind.equals("pwup")) {
+            pwUpsTaken += 1;
+        }
+
     }
 
 
